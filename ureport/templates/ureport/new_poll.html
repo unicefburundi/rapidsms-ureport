@@ -10,11 +10,11 @@
 {{ form|as_uni_form }}
 <div class="buttons" style="float:left;margin-bottom:10px;margin-top:10px">
   <a href="{% url polls %}">
-    <img src="{{ MEDIA_URL }}rapidsms/icons/silk/decline.png" alt=""/>
+    <img src="{{ STATIC_URL }}rapidsms/icons/silk/decline.png" alt=""/>
     Cancel
   </a>
   <a onclick="$('#newForm').submit();" href="javascript:void(0);">
-    <img src="{{ MEDIA_URL }}rapidsms/icons/silk/add.png" alt=""/>
+    <img src="{{ STATIC_URL }}rapidsms/icons/silk/add.png" alt=""/>
     Create Poll
   </a>
 </div>

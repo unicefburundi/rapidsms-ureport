@@ -42,8 +42,8 @@
 {% block partial_base_content %}
 <a onclick="$(this).next('.responses_meta').slideToggle(500);$('#collapse_img').toggle();$('#expand_img').toggle();" href="javascript:void(0)">
  Response rates
-     <img id="collapse_img" style="float:left" src="{{ MEDIA_URL }}rapidsms/icons/silk/section_expanded--bright.png" />
-     <img id="expand_img" style="float:left;display:none" src="{{ MEDIA_URL }}rapidsms/icons/silk/section_collapsed--bright.png" />
+     <img id="collapse_img" style="float:left" src="{{ STATIC_URL }}rapidsms/icons/silk/section_expanded--bright.png" />
+     <img id="expand_img" style="float:left;display:none" src="{{ STATIC_URL }}rapidsms/icons/silk/section_collapsed--bright.png" />
     </a>
 
     <div class="responses_meta " style="display:none;">
@@ -56,8 +56,8 @@
     </div>
     {% block export %}
     <div class="buttons">
-            <a href="{{ MEDIA_URL }}ureport/spreadsheets/poll_{{object_list.0.poll.pk }}.xls">
-            <img src="{{ MEDIA_URL }}poll/icons/silk/table_save.png" alt=""/> Export
+            <a href="{{ STATIC_URL }}ureport/spreadsheets/poll_{{object_list.0.poll.pk }}.xls">
+            <img src="{{ STATIC_URL }}poll/icons/silk/table_save.png" alt=""/> Export
         </a>
     </div>
         {% endblock %}

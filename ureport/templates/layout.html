@@ -3,16 +3,16 @@
 <head>
     <title>Ureport - {% block page_title %}Voice Matters{% endblock %}</title>
 
-    <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}ureport/stylesheets/base.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ureport/stylesheets/base.css">
  
 
 
     {% block stylesheets %}
-         <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}rapidsms/stylesheets/modules.css" />
+         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/modules.css" />
 
     {% endblock %}
-  <script type="text/javascript" src="{{ MEDIA_URL }}ureport/javascripts/jquery.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}ureport/javascripts/ureport.min.js?11"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/ureport.min.js?11"></script>
 
 {% block top_js %}
 
@@ -72,11 +72,11 @@
 	    <div class="footer">
 	       <div class="sponsors">
 	           Supported by:
-	           <img src="{{ MEDIA_URL }}ureport/images/unicef_logo.png"/>
-	           <img src="{{ MEDIA_URL }}ureport/images/brac_logo.png"/>
-	           <img src="{{ MEDIA_URL }}ureport/images/scouts_logo.png"/>
-	           <img src="{{ MEDIA_URL }}ureport/images/cou_logo.png"/>
-	           <img src="{{ MEDIA_URL }}ureport/images/gem_logo.png"/>
+	           <img src="{{ STATIC_URL }}ureport/images/unicef_logo.png"/>
+	           <img src="{{ STATIC_URL }}ureport/images/brac_logo.png"/>
+	           <img src="{{ STATIC_URL }}ureport/images/scouts_logo.png"/>
+	           <img src="{{ STATIC_URL }}ureport/images/cou_logo.png"/>
+	           <img src="{{ STATIC_URL }}ureport/images/gem_logo.png"/>
 	       </div>
 	       <div class="footerlinks">
 	           <div class="nav-bottom">
@@ -106,8 +106,8 @@
 	    </div>
 
 
-        <script type="text/javascript" src="{{ MEDIA_URL }}rapidsms/javascripts/collapse.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}ureport/javascripts/ureport_extras.min.js?1"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}rapidsms/javascripts/collapse.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/ureport_extras.min.js?1"></script>
     {% block javascripts %}
     {% endblock %}
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->

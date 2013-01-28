@@ -2,14 +2,14 @@
 
 {% block stylesheets %}
 
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}rapidsms/stylesheets/splits.css"/>
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}ureport/stylesheets/ureport.min.css?1"/>
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}rapidsms/stylesheets/modules.css"/>
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}rapidsms/stylesheets/icons.css"/>
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}contact/stylesheets/messages.css"/>
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}ureport/stylesheets/message_log.css"/>
-    <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}generic/stylesheets/jquery-ui-1.7.3.custom.css"/>
-<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}ureport/stylesheets/modal.css"/>
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/splits.css"/>
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}ureport/stylesheets/ureport.min.css?1"/>
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/modules.css"/>
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/icons.css"/>
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}contact/stylesheets/messages.css"/>
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}ureport/stylesheets/message_log.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}generic/stylesheets/jquery-ui-1.7.3.custom.css"/>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ureport/stylesheets/modal.css"/>
         <style>
             input {
                 width: 80%;
@@ -71,10 +71,10 @@
         </style>
 {% endblock %}
  {% block extra_js %}
-  <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}ureport/stylesheets/jquery-ui.css"/>
-    <script type="text/javascript" src="{{ MEDIA_URL }}ureport/javascripts/jquery-ui.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}ureport/javascripts/dropdown.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}ureport/javascripts/tabs.js"></script>
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}ureport/stylesheets/jquery-ui.css"/>
+    <script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/jquery-ui.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/dropdown.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/tabs.js"></script>
 
 {% endblock %}
         {%block top_js %}

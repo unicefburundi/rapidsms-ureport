@@ -7,7 +7,8 @@ from django.db.models import Count
 from .models import Ureporter,UreportContact
 from unregister.models import Blacklist
 from django.conf import settings
-from rapidsms_httprouter.models import Message, MessageBatch
+#from rapidsms_httprouter.models import Message, MessageBatch
+from rapidsms_httprouter.models import Message
 from django.contrib.sites.models import Site
 from rapidsms.models import Contact, Connection
 from django.db import models, transaction, connection

@@ -5,8 +5,8 @@ from rapidsms.models import Contact, Connection
 from django.contrib.auth.models import User, Group
 from rapidsms.contrib.locations.models import Location
 from script.models import ScriptSession
-from rapidsms.router.db.models import Message
-#from rapidsms_httprouter.models import Message
+#from rapidsms.router.db.models import Message
+from rapidsms_httprouter.models import Message
 from unregister.models import Blacklist
 from django.db.models.signals import post_save
 from ussd.models import  ussd_complete

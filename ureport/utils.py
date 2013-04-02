@@ -17,7 +17,37 @@ from django.db.models import Q
 import datetime
 import re
 
+def get_language(message):
+    joins = settings.JOIN_WORDS
+    for lang in joins:
+        if isinstance(joins[lang], basestring):
+            words = [joins[lang]]
+        else:
+            words = joins[lang]
+        reg = re.compile(r'|'.join(words), re.M|re.I)
+        match = reg.search(message.text.lower())
+        if match:
+            return lang
+        
+def get_scripts():
+    scripts = settings.SCRIPTS
+    _slist = []
+    for lang in scripts:
+        _slist.append(scripts[lang][1])
+    return _slist
 
+def all_optin_words():
+    joins = settings.JOIN_WORDS
+    _jlist = []
+    for lang in joins:
+        if isinstance(joins[lang], basestring):
+            words = [joins[lang]]
+            _jlist += words
+        else:
+            words = joins[lang]
+            _jlist += words
+    return _jlist
+        
 def get_contacts(**kwargs):
     request = kwargs.pop('request')
     if request.user.is_authenticated() and hasattr(Contact, 'groups'):

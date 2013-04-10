@@ -19,7 +19,7 @@ from django.core.mail import send_mail
 def autoreg(**kwargs):
     connection = kwargs['connection']
     progress = kwargs['sender']
-    if progress.script.slug in progress.script.slug in ['ureport_autoreg2', 'ureport_autoreg_luo2']:
+    if progress.script.slug in progress.script.slug in ['ureport_autoreg', 'ureport_autoreg_fr', 'ureport_autoreg_kirundi']:
         connection.contact = Contact.objects.create(name='Anonymous User')
         connection.save()
         session = ScriptSession.objects.filter(script=progress.script, connection=connection).order_by('-end_time')[0]
@@ -57,8 +57,7 @@ def autoreg(**kwargs):
         group_to_match = find_best_response(session, youthgrouppoll)
         gr_matched=False
         
-        #to avoid an attempt to None.split()
-        if group_to_match:
+        if group_to_match: #to avoid an attempt to None.split()
             try:
                 for group_pk, word_list in word_dict.items():
                     for word in word_list.split(","):

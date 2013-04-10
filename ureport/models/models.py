@@ -171,11 +171,6 @@ class AutoregGroupRules(models.Model):
     class Meta:
         app_label = 'ureport'
 
-
-
-
-
-
 from .litseners import  autoreg,check_conn,update_latest_poll,ussd_poll,add_to_poll
 
 script_progress_was_completed.connect(autoreg, weak=False)

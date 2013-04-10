@@ -31,7 +31,10 @@ class App(AppBase):
             prog.save()
             
 #            Message.objects.create(text=getattr(settings,'OPT_IN_CONFIRMATION',''), direction='O', connection=message.connection, status='Q')
-            message.respond(opt_in_words[language])
+            try:
+                message.respond(opt_in_words[language])
+            except:
+                pass
             return True
         
         #ignore subsequent join messages

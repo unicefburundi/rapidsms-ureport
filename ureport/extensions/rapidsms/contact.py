@@ -1,7 +1,7 @@
 from django.db import models
 
 from rapidsms.models import ContactBase
-from rapidsms.contrib.locations.models import Location
+#from rapidsms.contrib.locations.models import Location
 
 class ActivatedcContact(models.Model):
     """
@@ -11,7 +11,7 @@ class ActivatedcContact(models.Model):
     health_facility = models.CharField(null=True,blank=True,max_length=50)
     is_caregiver = models.BooleanField(default=False)
     occupation = models.CharField(null=True,blank=True,max_length=50)
-    subcounty = models.ForeignKey('locations.Location', blank=True, null=True, related_name='subcounties')
+    commune = models.ForeignKey('locations.Location', blank=True, null=True, related_name='communes')
 
     class Meta:
         abstract = True

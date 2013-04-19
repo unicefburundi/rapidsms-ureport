@@ -1,4 +1,6 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 from django.db import models
 from poll.models import Poll
 from rapidsms.models import Contact, Connection

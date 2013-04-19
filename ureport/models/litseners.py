@@ -1,4 +1,6 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 from rapidsms.models import Contact
 from script.models import ScriptSession
 from rapidsms_xforms.models import  XFormField

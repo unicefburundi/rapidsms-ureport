@@ -136,7 +136,7 @@
         }
     },
     {
-        "pk": 466, 
+        "pk": 472, 
         "model": "poll.poll", 
         "fields": {
             "default_response": "", 
@@ -155,7 +155,7 @@
         }
     }, 
     {
-        "pk": 467, 
+        "pk": 473, 
         "model": "poll.poll", 
         "fields": {
             "default_response": "", 
@@ -174,7 +174,7 @@
         }
     }, 
     {
-        "pk": 468, 
+        "pk": 474, 
         "model": "poll.poll", 
         "fields": {
             "default_response": "", 
@@ -193,7 +193,7 @@
         }
     }, 
     {
-        "pk": 469, 
+        "pk": 475, 
         "model": "poll.poll", 
         "fields": {
             "default_response": "", 
@@ -212,7 +212,7 @@
         }
     }, 
     {
-        "pk": 470, 
+        "pk": 476, 
         "model": "poll.poll", 
         "fields": {
             "default_response": "", 
@@ -231,7 +231,7 @@
         }
     }, 
     {
-        "pk": 471, 
+        "pk": 477, 
         "model": "poll.poll", 
         "fields": {
             "default_response": "", 
@@ -250,7 +250,7 @@
         }
     }, 
     {
-        "pk": 238, 
+        "pk": 240, 
         "model": "poll.category", 
         "fields": {
             "error_category": false, 
@@ -258,12 +258,12 @@
             "color": "", 
             "priority": null, 
             "default": false, 
-            "poll": 471, 
+            "poll": 477, 
             "response": null
         }
     }, 
     {
-        "pk": 237, 
+        "pk": 239, 
         "model": "poll.category", 
         "fields": {
             "error_category": false, 
@@ -271,27 +271,27 @@
             "color": "", 
             "priority": null, 
             "default": false, 
-            "poll": 471, 
+            "poll": 477, 
             "response": null
         }
     }, 
     {
-        "pk": 230, 
+        "pk": 232, 
         "model": "poll.rule", 
         "fields": {
             "regex": "^\\s*(m|mal|male|ma|mas|masculin|umugabo|ga|gabo|gab)(\\s|[^a-zA-Z]|$)", 
-            "category": 237, 
+            "category": 239, 
             "rule_string": "m|mal|male|ma|mas|masculin|umugabo|ga|gabo|gab", 
             "rule": null, 
             "rule_type": "r"
         }
     }, 
     {
-        "pk": 231, 
+        "pk": 233, 
         "model": "poll.rule", 
         "fields": {
             "regex": "^\\s*(f|fem|female|fe|f\u00e9mf\u00e9minin|f\u00e9|umugore|gore|go|gor)(\\s|[^a-zA-Z]|$)", 
-            "category": 238, 
+            "category": 240, 
             "rule_string": "f|fem|female|fe|f\u00e9mf\u00e9minin|f\u00e9|umugore|gore|go|gor", 
             "rule": null, 
             "rule_type": "r"
@@ -511,167 +511,23 @@
         }
     }, 
     {
-        "pk": 574, 
+        "pk": 591, 
         "model": "script.scriptstep", 
         "fields": {
-            "script": "autoreg_ki", 
+            "script": "autoreg_fr", 
             "retry_offset": 0, 
             "rule": "w", 
             "email": null, 
             "num_tries": 0, 
             "start_offset": 0, 
             "message": "", 
-            "poll": 468, 
-            "order": 3, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 552, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_en", 
-            "retry_offset": 0, 
-            "rule": "w", 
-            "email": null, 
-            "num_tries": 0, 
-            "start_offset": 0, 
-            "message": "UReport is a FREE text messaging service sponsored by UNICEF and other partners.", 
-            "poll": null, 
-            "order": 4, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 553, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_en", 
-            "retry_offset": 0, 
-            "rule": "w", 
-            "email": null, 
-            "num_tries": 0, 
-            "start_offset": 0, 
-            "message": "", 
-            "poll": 469, 
-            "order": 5, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 554, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_en", 
-            "retry_offset": 86400, 
-            "rule": "M", 
-            "email": null, 
-            "num_tries": 3, 
-            "start_offset": 0, 
-            "message": "", 
-            "poll": 470, 
-            "order": 6, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 555, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_en", 
-            "retry_offset": 0, 
-            "rule": "w", 
-            "email": null, 
-            "num_tries": 0, 
-            "start_offset": 0, 
-            "message": "", 
-            "poll": 471, 
+            "poll": 477, 
             "order": 7, 
-            "giveup_offset": 0
+            "giveup_offset": 86400
         }
     }, 
     {
-        "pk": 556, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_en", 
-            "retry_offset": 0, 
-            "rule": "w", 
-            "email": null, 
-            "num_tries": 0, 
-            "start_offset": 0, 
-            "message": "CONGRATULATIONS!! You are now  registered as a UReporter! Make a real difference with Ureport Burundi, Speak up and be heard! From UNICEF", 
-            "poll": null, 
-            "order": 8, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 557, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_fr", 
-            "retry_offset": 0, 
-            "rule": "w", 
-            "email": null, 
-            "num_tries": 0, 
-            "start_offset": 0, 
-            "message": "UReport is a FREE text messaging service sponsored by UNICEF and other partners.", 
-            "poll": null, 
-            "order": 4, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 558, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_fr", 
-            "retry_offset": 0, 
-            "rule": "w", 
-            "email": null, 
-            "num_tries": 0, 
-            "start_offset": 0, 
-            "message": "", 
-            "poll": 469, 
-            "order": 5, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 559, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_fr", 
-            "retry_offset": 86400, 
-            "rule": "M", 
-            "email": null, 
-            "num_tries": 3, 
-            "start_offset": 0, 
-            "message": "", 
-            "poll": 470, 
-            "order": 6, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 560, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_fr", 
-            "retry_offset": 0, 
-            "rule": "w", 
-            "email": null, 
-            "num_tries": 0, 
-            "start_offset": 0, 
-            "message": "", 
-            "poll": 471, 
-            "order": 7, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 561, 
+        "pk": 592, 
         "model": "script.scriptstep", 
         "fields": {
             "script": "autoreg_fr", 
@@ -687,10 +543,10 @@
         }
     }, 
     {
-        "pk": 562, 
+        "pk": 593, 
         "model": "script.scriptstep", 
         "fields": {
-            "script": "autoreg_fr", 
+            "script": "autoreg_ki", 
             "retry_offset": 0, 
             "rule": "w", 
             "email": null, 
@@ -703,55 +559,87 @@
         }
     }, 
     {
-        "pk": 563, 
+        "pk": 594, 
         "model": "script.scriptstep", 
         "fields": {
-            "script": "autoreg_fr", 
+            "script": "autoreg_ki", 
             "retry_offset": 0, 
             "rule": "w", 
             "email": null, 
             "num_tries": 0, 
-            "start_offset": 0, 
+            "start_offset": 60, 
             "message": "", 
-            "poll": 466, 
+            "poll": 472, 
             "order": 1, 
             "giveup_offset": 0
         }
     }, 
     {
-        "pk": 564, 
+        "pk": 575, 
         "model": "script.scriptstep", 
         "fields": {
-            "script": "autoreg_fr", 
+            "script": "autoreg_en", 
+            "retry_offset": 0, 
+            "rule": "w", 
+            "email": null, 
+            "num_tries": 0, 
+            "start_offset": 0, 
+            "message": "Welcome to Ureport Burundi, where you can SHARE and RECEIVE information about what is happening in your community. It\u2019s FREE!", 
+            "poll": null, 
+            "order": 0, 
+            "giveup_offset": 0
+        }
+    }, 
+    {
+        "pk": 595, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_ki", 
             "retry_offset": 86400, 
             "rule": "M", 
             "email": null, 
             "num_tries": 3, 
             "start_offset": 0, 
             "message": "", 
-            "poll": 467, 
+            "poll": 473, 
             "order": 2, 
+            "giveup_offset": 86400
+        }
+    }, 
+    {
+        "pk": 576, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_en", 
+            "retry_offset": 0, 
+            "rule": "w", 
+            "email": null, 
+            "num_tries": 0, 
+            "start_offset": 60, 
+            "message": "", 
+            "poll": 472, 
+            "order": 1, 
             "giveup_offset": 0
         }
     }, 
     {
-        "pk": 565, 
+        "pk": 596, 
         "model": "script.scriptstep", 
         "fields": {
-            "script": "autoreg_fr", 
+            "script": "autoreg_ki", 
             "retry_offset": 0, 
             "rule": "w", 
             "email": null, 
             "num_tries": 0, 
             "start_offset": 0, 
             "message": "", 
-            "poll": 468, 
+            "poll": 474, 
             "order": 3, 
-            "giveup_offset": 0
+            "giveup_offset": 86400
         }
     }, 
     {
-        "pk": 566, 
+        "pk": 597, 
         "model": "script.scriptstep", 
         "fields": {
             "script": "autoreg_ki", 
@@ -763,75 +651,11 @@
             "message": "UReport is a FREE text messaging service sponsored by UNICEF and other partners.", 
             "poll": null, 
             "order": 4, 
-            "giveup_offset": 0
+            "giveup_offset": 60
         }
     }, 
     {
-        "pk": 548, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_en", 
-            "retry_offset": 0, 
-            "rule": "w", 
-            "email": null, 
-            "num_tries": 0, 
-            "start_offset": 0, 
-            "message": "Welcome to Ureport Burundi, where you can SHARE and RECEIVE information about what is happening in your community. It\u2019s FREE!", 
-            "poll": null, 
-            "order": 0, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 549, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_en", 
-            "retry_offset": 0, 
-            "rule": "w", 
-            "email": null, 
-            "num_tries": 0, 
-            "start_offset": 0, 
-            "message": "", 
-            "poll": 466, 
-            "order": 1, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 550, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_en", 
-            "retry_offset": 86400, 
-            "rule": "M", 
-            "email": null, 
-            "num_tries": 3, 
-            "start_offset": 0, 
-            "message": "", 
-            "poll": 467, 
-            "order": 2, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 551, 
-        "model": "script.scriptstep", 
-        "fields": {
-            "script": "autoreg_en", 
-            "retry_offset": 0, 
-            "rule": "w", 
-            "email": null, 
-            "num_tries": 0, 
-            "start_offset": 0, 
-            "message": "", 
-            "poll": 468, 
-            "order": 3, 
-            "giveup_offset": 0
-        }
-    }, 
-    {
-        "pk": 567, 
+        "pk": 598, 
         "model": "script.scriptstep", 
         "fields": {
             "script": "autoreg_ki", 
@@ -841,13 +665,13 @@
             "num_tries": 0, 
             "start_offset": 0, 
             "message": "", 
-            "poll": 469, 
+            "poll": 475, 
             "order": 5, 
-            "giveup_offset": 0
+            "giveup_offset": 86400
         }
     }, 
     {
-        "pk": 568, 
+        "pk": 599, 
         "model": "script.scriptstep", 
         "fields": {
             "script": "autoreg_ki", 
@@ -857,13 +681,13 @@
             "num_tries": 3, 
             "start_offset": 0, 
             "message": "", 
-            "poll": 470, 
+            "poll": 476, 
             "order": 6, 
-            "giveup_offset": 0
+            "giveup_offset": 86400
         }
     }, 
     {
-        "pk": 569, 
+        "pk": 600, 
         "model": "script.scriptstep", 
         "fields": {
             "script": "autoreg_ki", 
@@ -873,13 +697,13 @@
             "num_tries": 0, 
             "start_offset": 0, 
             "message": "", 
-            "poll": 471, 
+            "poll": 477, 
             "order": 7, 
-            "giveup_offset": 0
+            "giveup_offset": 86400
         }
     }, 
     {
-        "pk": 570, 
+        "pk": 601, 
         "model": "script.scriptstep", 
         "fields": {
             "script": "autoreg_ki", 
@@ -895,10 +719,122 @@
         }
     }, 
     {
-        "pk": 571, 
+        "pk": 577, 
         "model": "script.scriptstep", 
         "fields": {
-            "script": "autoreg_ki", 
+            "script": "autoreg_en", 
+            "retry_offset": 86400, 
+            "rule": "M", 
+            "email": null, 
+            "num_tries": 3, 
+            "start_offset": 0, 
+            "message": "", 
+            "poll": 473, 
+            "order": 2, 
+            "giveup_offset": 86400
+        }
+    }, 
+    {
+        "pk": 578, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_en", 
+            "retry_offset": 0, 
+            "rule": "w", 
+            "email": null, 
+            "num_tries": 0, 
+            "start_offset": 0, 
+            "message": "", 
+            "poll": 474, 
+            "order": 3, 
+            "giveup_offset": 86400
+        }
+    }, 
+    {
+        "pk": 579, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_en", 
+            "retry_offset": 0, 
+            "rule": "w", 
+            "email": null, 
+            "num_tries": 0, 
+            "start_offset": 0, 
+            "message": "UReport is a FREE text messaging service sponsored by UNICEF and other partners.", 
+            "poll": null, 
+            "order": 4, 
+            "giveup_offset": 60
+        }
+    }, 
+    {
+        "pk": 580, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_en", 
+            "retry_offset": 0, 
+            "rule": "w", 
+            "email": null, 
+            "num_tries": 0, 
+            "start_offset": 0, 
+            "message": "", 
+            "poll": 475, 
+            "order": 5, 
+            "giveup_offset": 86400
+        }
+    }, 
+    {
+        "pk": 581, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_en", 
+            "retry_offset": 86400, 
+            "rule": "M", 
+            "email": null, 
+            "num_tries": 3, 
+            "start_offset": 0, 
+            "message": "", 
+            "poll": 476, 
+            "order": 6, 
+            "giveup_offset": 86400
+        }
+    }, 
+    {
+        "pk": 582, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_en", 
+            "retry_offset": 0, 
+            "rule": "w", 
+            "email": null, 
+            "num_tries": 0, 
+            "start_offset": 0, 
+            "message": "", 
+            "poll": 477, 
+            "order": 7, 
+            "giveup_offset": 86400
+        }
+    }, 
+    {
+        "pk": 583, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_en", 
+            "retry_offset": 0, 
+            "rule": "w", 
+            "email": null, 
+            "num_tries": 0, 
+            "start_offset": 0, 
+            "message": "CONGRATULATIONS!! You are now  registered as a UReporter! Make a real difference with Ureport Burundi, Speak up and be heard! From UNICEF", 
+            "poll": null, 
+            "order": 8, 
+            "giveup_offset": 0
+        }
+    }, 
+    {
+        "pk": 584, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_fr", 
             "retry_offset": 0, 
             "rule": "w", 
             "email": null, 
@@ -911,35 +847,99 @@
         }
     }, 
     {
-        "pk": 572, 
+        "pk": 585, 
         "model": "script.scriptstep", 
         "fields": {
-            "script": "autoreg_ki", 
+            "script": "autoreg_fr", 
             "retry_offset": 0, 
             "rule": "w", 
             "email": null, 
             "num_tries": 0, 
-            "start_offset": 0, 
+            "start_offset": 60, 
             "message": "", 
-            "poll": 466, 
+            "poll": 472, 
             "order": 1, 
             "giveup_offset": 0
         }
     }, 
     {
-        "pk": 573, 
+        "pk": 586, 
         "model": "script.scriptstep", 
         "fields": {
-            "script": "autoreg_ki", 
+            "script": "autoreg_fr", 
             "retry_offset": 86400, 
             "rule": "M", 
             "email": null, 
             "num_tries": 3, 
             "start_offset": 0, 
             "message": "", 
-            "poll": 467, 
+            "poll": 473, 
             "order": 2, 
-            "giveup_offset": 0
+            "giveup_offset": 86400
+        }
+    }, 
+    {
+        "pk": 587, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_fr", 
+            "retry_offset": 0, 
+            "rule": "w", 
+            "email": null, 
+            "num_tries": 0, 
+            "start_offset": 0, 
+            "message": "", 
+            "poll": 474, 
+            "order": 3, 
+            "giveup_offset": 86400
+        }
+    }, 
+    {
+        "pk": 588, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_fr", 
+            "retry_offset": 0, 
+            "rule": "w", 
+            "email": null, 
+            "num_tries": 0, 
+            "start_offset": 0, 
+            "message": "UReport is a FREE text messaging service sponsored by UNICEF and other partners.", 
+            "poll": null, 
+            "order": 4, 
+            "giveup_offset": 60
+        }
+    }, 
+    {
+        "pk": 589, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_fr", 
+            "retry_offset": 0, 
+            "rule": "w", 
+            "email": null, 
+            "num_tries": 0, 
+            "start_offset": 0, 
+            "message": "", 
+            "poll": 475, 
+            "order": 5, 
+            "giveup_offset": 86400
+        }
+    }, 
+    {
+        "pk": 590, 
+        "model": "script.scriptstep", 
+        "fields": {
+            "script": "autoreg_fr", 
+            "retry_offset": 86400, 
+            "rule": "M", 
+            "email": null, 
+            "num_tries": 3, 
+            "start_offset": 0, 
+            "message": "", 
+            "poll": 476, 
+            "order": 6, 
+            "giveup_offset": 86400
         }
     }
 ]

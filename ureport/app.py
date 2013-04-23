@@ -18,7 +18,7 @@ class App(AppBase):
     def handle (self, message):
         language = get_language(message)
         scripts = get_scripts()
-        opt_in_words = getattr(settings,'OPT_IN_CONFIRMATION','')
+#        opt_in_words = getattr(settings,'OPT_IN_CONFIRMATION','')
         
         #dump new connections in Autoreg
         if not message.connection.contact and not\
@@ -31,11 +31,11 @@ class App(AppBase):
             prog.save()
             
 #            Message.objects.create(text=getattr(settings,'OPT_IN_CONFIRMATION',''), direction='O', connection=message.connection, status='Q')
-            try:
-                message.respond(opt_in_words[language])
-            except:
-                pass
-            return True
+#            try:
+#                message.respond(opt_in_words[language])
+#            except:
+#                pass
+#            return True
         
         #ignore subsequent join messages
         elif message.text.lower().strip() in all_optin_words():

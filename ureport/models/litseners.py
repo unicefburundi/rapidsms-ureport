@@ -17,34 +17,36 @@ from rapidsms_httprouter.models import Message
 #from rapidsms.router.db.models import Message
 from django.conf import settings
 from django.core.mail import send_mail
+import difflib
 
 def autoreg(**kwargs):
     connection = kwargs['connection']
     progress = kwargs['sender']
-    if progress.script.slug in progress.script.slug in ['ureport_autoreg', 'ureport_autoreg_fr', 'ureport_autoreg_kirundi']:
+    if progress.script.slug in progress.script.slug in ['autoreg_en', 'autoreg_fr', 'autoreg_ki']:
         connection.contact = Contact.objects.create(name='Anonymous User')
         connection.save()
         session = ScriptSession.objects.filter(script=progress.script, connection=connection).order_by('-end_time')[0]
         script = progress.script
-        youthgrouppoll = script.steps.get(order=1).poll
-        districtpoll = script.steps.get(order=2).poll
-        namepoll = script.steps.get(order=3).poll
-        agepoll = script.steps.get(order=4).poll
-        genderpoll = script.steps.get(order=5).poll
-        villagepoll = script.steps.get(order=6).poll
+        reporter_group_poll = script.steps.get(order=1).poll
+        reporter_reporting_location_poll = script.steps.get(order=2).poll
+        reporter_colline_poll = script.steps.get(order=3).poll
+        reporter_name_poll = script.steps.get(order=5).poll
+        reporter_age_poll = script.steps.get(order=6).poll
+        reporter_gender_poll = script.steps.get(order=7).poll
         contact = connection.contact
         word_dict=dict(AutoregGroupRules.objects.exclude(values=None).values_list('group__name','values'))
-        name = find_best_response(session, namepoll)
+        name = find_best_response(session, reporter_name_poll)
         if name:
             contact.name = name[:100]
 
-        contact.reporting_location = find_best_response(session, districtpoll)
+        contact.reporting_location = find_best_response(session, reporter_reporting_location_poll)
 
-        age = find_best_response(session, agepoll)
+        age = find_best_response(session, reporter_age_poll)
+        print age
         if age and age < 100:
             contact.birthdate = datetime.datetime.now() - datetime.timedelta(days=(365 * int(age)))
 
-        gresps = session.responses.filter(response__poll=genderpoll, response__has_errors=False).order_by('-response__date')
+        gresps = session.responses.filter(response__poll=reporter_gender_poll, response__has_errors=False).order_by('-response__date')
         if gresps.count():
             gender = gresps[0].response
             if gender.categories.filter(category__name='male').count():
@@ -52,27 +54,26 @@ def autoreg(**kwargs):
             elif gender.categories.filter(category__name='female').exists():
                 contact.gender = 'F'
 
-        village = find_best_response(session, villagepoll)
-        if village:
-            contact.village = village
+        colline = find_best_response(session, reporter_colline_poll)
+        if colline:
+            contact.colline = colline
 
-        group_to_match = find_best_response(session, youthgrouppoll)
+        group_to_match = find_best_response(session, reporter_group_poll)
         gr_matched=False
         
         if group_to_match: #to avoid an attempt to None.split()
             try:
                 for group_pk, word_list in word_dict.items():
-                    for word in word_list.split(","):
-                        if word in group_to_match.split():
-                            contact.groups.add(Group.objects.get(pk=group_pk))
-                            gr_matched=True
+                    if difflib.get_close_matches(group_to_match.lower(), word_list.split(',')):
+                        contact.groups.add(Group.objects.get(name=group_pk))
+                        gr_matched=True
             except AssertionError:
                 pass
         default_group = None
         if progress.language:
             contact.language = progress.language
-        if Group.objects.filter(name='Other uReporters').count():
-            default_group = Group.objects.get(name='Other uReporters')
+        if Group.objects.filter(name='Other Reporters').count():
+            default_group = Group.objects.get(name='Other Reporters')
         if group_to_match and not gr_matched:
 
             for g in re.findall(r'\w+', group_to_match):

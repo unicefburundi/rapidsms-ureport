@@ -22,6 +22,7 @@ from django.core.management import call_command
 from django.test.client import Client
 from script.signals import script_progress_was_completed, script_progress
 from script.utils.handling import find_best_response
+from ureport.models.database_views import UreportContact
 import difflib
 
 class AutoRegTest(TestCase): #pragma: no cover
@@ -122,6 +123,7 @@ class AutoRegTest(TestCase): #pragma: no cover
         self.assertEquals(contact.birthdate.date(), birth_date.date())
         self.assertEquals(contact.gender, 'M')
         self.assertEquals(contact.default_connection, self.connection)
+#        self.assertEqual(UreportContact.objects.count(), 1)
         
     def testBasicAutoRegFr(self):
         Script.objects.all().update(enabled=True)

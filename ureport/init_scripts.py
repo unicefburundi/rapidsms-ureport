@@ -45,8 +45,8 @@ def init_scripts(site):
     #Message, Text, Rule, Start Offset, 'Retry Offset, Give up Offset, Number of Tries, 
     simple_scripts = {
         #English autoreg
-	    'autoreg en':[     (False, "Welcome to Ureport Burundi, where you can SHARE and RECEIVE information about what is happening in your community. It’s FREE!", ScriptStep.WAIT_MOVEON, 0, False, False, 0,),
-                           (Poll.TYPE_TEXT, 'reporter_group', "Do you belong to a volunteer organization? Please type ‘YES’ or ‘NO’ and the name of the organization ONLY.", ScriptStep.WAIT_MOVEON, 60, False, False, 0,),
+	    'autoreg en':[     (False, "Welcome to Ureport Burundi, where you can SHARE and RECEIVE information about what is happening in your community. It’s FREE!", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),
+                           (Poll.TYPE_TEXT, 'reporter_group', "Do you belong to a volunteer organization? Please type ‘YES’ or ‘NO’ and the name of the organization ONLY.", ScriptStep.WAIT_MOVEON, 0, False, 86400, 0,),
                            (Poll.TYPE_LOCATION, 'reporter_reporting_location', "Tell us where you'll be reporting from so we can work together to try resolve issues of your community! Reply with the name of your province ONLY.", ScriptStep.STRICT_MOVEON, 0, 86400, 86400, 3,),
                            (Poll.TYPE_LOCATION, 'reporter_colline', "From which colline will you be reporting? Please respond ONLY with the name of your colline.", ScriptStep.WAIT_MOVEON, 0, False, 86400, 0,),
                            (False, "UReport is a FREE text messaging service sponsored by UNICEF and other partners.", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),
@@ -58,8 +58,8 @@ def init_scripts(site):
         }
     script_translations = {
         #French autoreg
-        'autoreg fr':[     (False, "Bienvenue dans Ureport/Burundi, ou tu peux PARTAGER et RECEVOIR l'information sur ce qui se passe dans ta communauté, C'est GRATUIT!", ScriptStep.WAIT_MOVEON, 0, False, False, 0,),
-                           (Poll.TYPE_TEXT, 'reporter_group', "Appartiens-tu à une Organisation de volontaires? S'il te plaît réponds par oui ou non et le nom de l'organisation SEULEMENT", ScriptStep.WAIT_MOVEON, 60, False, False, 0,),
+        'autoreg fr':[     (False, "Bienvenue dans Ureport/Burundi, ou tu peux PARTAGER et RECEVOIR l'information sur ce qui se passe dans ta communauté, C'est GRATUIT!", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),
+                           (Poll.TYPE_TEXT, 'reporter_group', "Appartiens-tu à une Organisation de volontaires? S'il te plaît réponds par oui ou non et le nom de l'organisation SEULEMENT", ScriptStep.WAIT_MOVEON, 0, False, 86400, 0,),
                            (Poll.TYPE_LOCATION, 'reporter_reporting_location', "Dis nous de quelle localité tu rapportes afin de travailler ensemble pour résoudre les défis de ta communauté! Réponds avec le nom de ta province!", ScriptStep.STRICT_MOVEON, 0, 86400, 86400, 3,),
                            (Poll.TYPE_LOCATION, 'reporter_colline', "De quelle colline rapporteras-tu? S'il te plait réponds SEULEMENT avec le nom de ta colline. ", ScriptStep.WAIT_MOVEON, 0, False, 86400, 0,),
                            (False, "UReport est un service GRATUIT de messagerie sponsorisée par l'UNICEF et d'autres partenaires.", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),
@@ -69,8 +69,8 @@ def init_scripts(site):
                            (False, "FELICITATIONS!! Tu es maintenant enregistré comme un Ureporter. Fais une vraie différence avec Ureport Burundi! Parles et soit écouté! De l'UNICEF", ScriptStep.WAIT_MOVEON, 0, False, False, 0,),
                      ],
         #Kirundi autoreg
-        'autoreg ki':[     (False, "Kaze muri Ureport/Burundi, aho ushobora gutanga no kuronka inkuru ku bibera mu karere uherereyemwo, Ni KU BUNTU!", ScriptStep.WAIT_MOVEON, 0, False, False, 0,),
-                           (Poll.TYPE_TEXT, 'reporter_group', "Woba uri umunywanyi mw'ishirahamwe ry'abitanga? Ishura EGO canke OYA hamwe n'izina ry'iryo Shirahamwe GUSA.", ScriptStep.WAIT_MOVEON, 60, False, False, 0,),
+        'autoreg ki':[     (False, "Kaze muri Ureport/Burundi, aho ushobora gutanga no kuronka inkuru ku bibera mu karere uherereyemwo, Ni KU BUNTU!", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),
+                           (Poll.TYPE_TEXT, 'reporter_group', "Woba uri umunywanyi mw'ishirahamwe ry'abitanga? Ishura EGO canke OYA hamwe n'izina ry'iryo Shirahamwe GUSA.", ScriptStep.WAIT_MOVEON, 0, False, 86400, 0,),
                            (Poll.TYPE_LOCATION, 'reporter_reporting_location', "Tubwire akarere utangiramwo inkuru, bidufashe gukorera hamwe gutorera inyishu ingorane zo mu karere kanyu! Ishura izina ry'intara yawe GUSA", ScriptStep.STRICT_MOVEON, 0, 86400, 86400, 3,),
                            (Poll.TYPE_LOCATION, 'reporter_colline', "Ni uwuhe mutumba utangiramwo inkuru? Ishura izina ry'umutumba wawe GUSA.", ScriptStep.WAIT_MOVEON, 0, False, 86400, 0,),
                            (False, "Ureport Ni uburyo bwo kurungika ubutumwa ku buntu, bifashijwe n'intererano ya UNICEF n'ayandi mashiramwe.", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),
@@ -84,14 +84,17 @@ def init_scripts(site):
     user = User.objects.get_or_create(username='admin')[0]
 
     for script_name, polls in simple_scripts.items():
-        Script.objects.filter(slug="%s"%script_name.lower().replace(' ', '_')).delete()
-        script = Script.objects.create(slug="%s" % script_name.lower().replace(' ', '_'))
+#        Script.objects.filter(slug="%s"%script_name.lower().replace(' ', '_')).delete()
+        #We are trying to not recreate scripts in order to not mess up people who have active sessions attached to scripts
+        script, created = Script.objects.get_or_create(slug="%s" % script_name.lower().replace(' ', '_'))
         script.name = "Ureport %s script" % script_name
-        scriptname_parts = script_name.split(' ')
         script.save()
-        created = True
+        scriptname_parts = script_name.split(' ')
+#        import ipdb;ipdb.set_trace()
+        #If its a new script we are adding
         if created:
             script.sites.add(Site.objects.get_current())
+            
             step = 0
             for poll_info in polls:
                 if poll_info[0]:
@@ -107,6 +110,7 @@ def init_scripts(site):
                             rule, _ = Rule.objects.get_or_create(regex=regex, category=category, rule_type='r', rule_string='|'.join(rules))
                     if len(poll_info) > 9 and poll_info[9]:
                         poll.add_yesno_categories()
+                    
                     script.steps.add(\
                                 ScriptStep.objects.get_or_create(
                                 script=script,
@@ -131,18 +135,56 @@ def init_scripts(site):
                                 num_tries=poll_info[6],
                         )[0])
                 step = step + 1
+        
+        #This is an old script, we can simply attempt to update its steps and poll information
+        else:
+            step = 0
+            script_step = script.steps.get(order=step, script__slug=script.slug)
+            for poll_info in polls:
+                if poll_info[0]:
+                    #We can delete the poll and recreate it, doesn't matter the poll a step is attached to is traced by the step not Poll ID
+                    Poll.objects.filter(name=poll_info[1]).delete()
+                    poll = Poll.objects.create(user=user, type=poll_info[0], name='%s_%s'%(poll_info[1], scriptname_parts[1]), default_response='', question=poll_info[2])
+                    poll.sites.add(Site.objects.get_current())
+                    poll.save()
+                    
+                    if len(poll_info) > 8 and poll_info[8]:
+                        for cat, rules in poll_info[8].items():
+                            category, _ = Category.objects.get_or_create(name=cat, poll=poll)
+                            regex = '%s%s%s'% ('^\s*(', '|'.join(rules), ')(\s|[^a-zA-Z]|$)')
+                            rule, _ = Rule.objects.get_or_create(regex=regex, category=category, rule_type='r', rule_string='|'.join(rules))
+                    if len(poll_info) > 9 and poll_info[9]:
+                        poll.add_yesno_categories()
+                        
+                    script_step.poll = poll
+                    script_step.order = step #Order might change due to insertion or deletion of steps
+                    script_step.rule = poll_info[3]
+                    script_step.start_offset=poll_info[4]
+                    script_step.retry_offset=poll_info[5]
+                    script_step.giveup_offset=poll_info[6]
+                    script_step.num_tries=poll_info[7]
+                    script_step.save()
+                else:
+                    script_step.message = poll_info[1]
+                    script_step.order = step
+                    script_step.rule = poll_info[2]
+                    script_step.start_offset=poll_info[3]
+                    script_step.retry_offset=poll_info[4]
+                    script_step.giveup_offset=poll_info[5]
+                    script_step.num_tries=poll_info[6]
+                    script_step.save()
+                step = step + 1
                 
     for script_name, polls in script_translations.items():
-        Script.objects.filter(slug="%s"%script_name.lower().replace(' ', '_')).delete()
-        script = Script.objects.create(slug="%s" % script_name.lower().replace(' ', '_'))
+        #Even for translated scripts, we try not to unnecessarily recreate scripts
+        script, created = Script.objects.get_or_create(slug="%s" % script_name.lower().replace(' ', '_'))
         script.name = "Ureport %s script" % script_name
-        scriptname_parts = script_name.split(' ')
         script.save()
-        created = True
+        scriptname_parts = script_name.split(' ')
+        #If NEW translation, create new steps based on the English script. Since its merely a translation, we assume scripts are identical in structure
         if created:
             script.sites.add(Site.objects.get_current())
             for en_step in ScriptStep.objects.filter(script__slug='autoreg_en'):
-#                script.steps.add(en_step)
                 if en_step.message:
                     script.steps.add(ScriptStep.objects.get_or_create(
                                     script=script,
@@ -167,21 +209,70 @@ def init_scripts(site):
                                     num_tries=en_step.num_tries,
                             )[0]
                         )
+            #And finally the translations for the steps
             step = 0
             for poll_info in polls:
                 if poll_info[0]:
                     translation, _ = Translation.objects.get_or_create(language=scriptname_parts[1], \
                                                 field=Poll.objects.get(name='%s_en'% poll_info[1]).question, \
                                                 value=poll_info[2])
+                else:
+                    translation, _ = Translation.objects.get_or_create(language=scriptname_parts[1], \
+                                                field=ScriptStep.objects.get(script__slug='autoreg_en', order=step).message, \
+                                                value=poll_info[1])
+                step = step + 1
+                
+        #Its an old script, but steps could have changed
+        else:
+            for en_step in ScriptStep.objects.order_by('order').filter(script__slug='autoreg_en'):
+                try:
+                    script_step = script.steps.get(order=en_step.order, script__slug=script.slug)
+                    if en_step.message:
+                        script_step.message = en_step.message
+                    else:
+                        script_step.poll = en_step.poll
+                    script_step.order = en_step.order, #we might need to maintain the integrity scriptprogress by preserving step.order but the english script might have added a new step, what happens?
+                    script_step.rule = en_step.rule
+                    script_step.start_offset = en_step.start_offset
+                    script_step.retry_offset = en_step.retry_offset
+                    script_step.giveup_offset = en_step.giveup_offset
+                    script_step.num_tries = en_step.num_tries
+                    script_step.save()
+                    
+                #It is possible that a new step was added so, we add the step
+                except ScriptStep.DoesNotExist:
+                    if en_step.message:
+                        script.steps.add(ScriptStep.objects.get_or_create(
+                                    script=script,
+                                    message=en_step.message,
+                                    order=en_step.order,
+                                    rule=en_step.rule,
+                                    start_offset=en_step.start_offset,
+                                    retry_offset=en_step.retry_offset,
+                                    giveup_offset=en_step.giveup_offset,
+                                    num_tries=en_step.num_tries,
+                            )[0]
+                        )
+                    else:
+                        script.steps.add(ScriptStep.objects.get_or_create(
+                                    script=script,
+                                    poll=en_step.poll,
+                                    order=en_step.order,
+                                    rule=en_step.rule,
+                                    start_offset=en_step.start_offset,
+                                    retry_offset=en_step.retry_offset,
+                                    giveup_offset=en_step.giveup_offset,
+                                    num_tries=en_step.num_tries,
+                            )[0]
+                        )
                         
-#                    if len(poll_info) > 8 and poll_info[8]:
-#                        for cat, rules in poll_info[8].items():
-#                            category = Category.objects.get(name=cat, poll=Poll.objects.get(name='%s_en'% poll_info[1]))
-#                            rule = Rule.objects.get(category=category)
-#                            new_regex = '%s%s|%s%s' % ('^\s*(', Rule.objects.get(category=category).rule_string.decode('utf-8'), '|'.join(rules), ')(\s|[^a-zA-Z]|$)')
-#                            rule.regex = new_regex
-#                            rule.rule_string = '%s|%s' % (Rule.objects.get(category=category).rule_string, '|'.join(rules))
-#                            rule.save()
+            #Translation can always change, no biggy              
+            step = 0
+            for poll_info in polls:
+                if poll_info[0]:
+                    translation, _ = Translation.objects.get_or_create(language=scriptname_parts[1], \
+                                                field=Poll.objects.get(name='%s_en'% poll_info[1]).question, \
+                                                value=poll_info[2])
                 else:
                     translation, _ = Translation.objects.get_or_create(language=scriptname_parts[1], \
                                                 field=ScriptStep.objects.get(script__slug='autoreg_en', order=step).message, \

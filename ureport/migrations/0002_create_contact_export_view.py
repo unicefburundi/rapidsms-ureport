@@ -108,12 +108,12 @@ LEFT JOIN
         """
         
         trigger="""
-CREATE or REPLACE FUNCTION ureport_contact_refresh_row( xid integer
+CREATE or REPLACE FUNCTION ureport_contact_refresh_row( rapidsms_contact_id integer
 ) returns void
 security definer language 'plpgsql' as $$ begin
 DELETE
 FROM ureport_contact uc
-WHERE uc.id = xid;
+WHERE uc.id = rapidsms_contact_id;
 INSERT INTO ureport_contact  
 SELECT id,
     name,
@@ -131,15 +131,14 @@ SELECT id,
     questions,
     incoming,
     connection_pk,
-    ce.group FROM contacts_export ce WHERE ce.id = xid;
+    ce.group FROM contacts_export ce WHERE ce.id = rapidsms_contact_id;
 end $$;
 
-CREATE OR REPLACE FUNCTION ureport_contact_refresh_row_connection( id integer
-) returns void
+CREATE OR REPLACE FUNCTION ureport_contact_refresh_row_connection( rapidsms_connection_id integer ) returns void
 security definer language 'plpgsql' as $$ begin
 DELETE
 FROM ureport_contact uc
-WHERE uc.connection_pk = id;
+WHERE uc.connection_pk = rapidsms_connection_id;
 INSERT INTO ureport_contact  SELECT id,
     name,
     is_caregiver,
@@ -157,7 +156,7 @@ INSERT INTO ureport_contact  SELECT id,
     incoming,
     connection_pk,
     ce.group  
-    FROM contacts_export ce WHERE ce.connection_pk = id;
+    FROM contacts_export ce WHERE ce.connection_pk = rapidsms_connection_id;
 end $$;
 
 create or replace  function contact_update()  returns trigger

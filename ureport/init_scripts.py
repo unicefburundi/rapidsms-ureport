@@ -46,7 +46,7 @@ def init_scripts(site):
     simple_scripts = {
         #English autoreg
 	    'autoreg en':[     (False, "Welcome to Ureport Burundi, where you can SHARE and RECEIVE information about what is happening in your community. It’s FREE!", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),
-                           (Poll.TYPE_TEXT, 'reporter_group', "Do you belong to a volunteer organization? Please type ‘YES’ or ‘NO’ and the name of the organization ONLY.", ScriptStep.WAIT_MOVEON, 0, False, 3600, 0,),
+                           (Poll.TYPE_TEXT, 'reporter_group', "Do you belong to a volunteer organization? Please type the name of the organization ONLY.", ScriptStep.WAIT_MOVEON, 0, False, 3600, 0,),
                            (Poll.TYPE_LOCATION, 'reporter_reporting_location', "Tell us where you'll be reporting from so we can work together to try resolve issues of your community! Reply with the name of your province ONLY.", ScriptStep.STRICT_MOVEON, 0, 3600, 3600, 3,),
                            (Poll.TYPE_LOCATION, 'reporter_colline', "From which colline will you be reporting? Please respond ONLY with the name of your colline.", ScriptStep.WAIT_MOVEON, 0, False, 3600, 0,),
                            (False, "UReport is a FREE text messaging service sponsored by UNICEF and other partners.", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),
@@ -59,7 +59,7 @@ def init_scripts(site):
     script_translations = {
         #French autoreg
         'autoreg fr':[     (False, "Bienvenue dans Ureport/Burundi, ou tu peux PARTAGER et RECEVOIR l'information sur ce qui se passe dans ta communauté, C'est GRATUIT!", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),
-                           (Poll.TYPE_TEXT, 'reporter_group', "Appartiens-tu à une Organisation de volontaires? S'il te plaît réponds par oui ou non et le nom de l'organisation SEULEMENT", ScriptStep.WAIT_MOVEON, 0, False, 3600, 0,),
+                           (Poll.TYPE_TEXT, 'reporter_group', "Appartiens-tu à une Organisation de volontaires? S'il te plaît réponds par le nom de l'organisation SEULEMENT", ScriptStep.WAIT_MOVEON, 0, False, 3600, 0,),
                            (Poll.TYPE_LOCATION, 'reporter_reporting_location', "Dis nous de quelle localité tu rapportes afin de travailler ensemble pour résoudre les défis de ta communauté! Réponds avec le nom de ta province!", ScriptStep.STRICT_MOVEON, 0, 3600, 3600, 3,),
                            (Poll.TYPE_LOCATION, 'reporter_colline', "De quelle colline rapporteras-tu? S'il te plait réponds SEULEMENT avec le nom de ta colline. ", ScriptStep.WAIT_MOVEON, 0, False, 3600, 0,),
                            (False, "UReport est un service GRATUIT de messagerie sponsorisée par l'UNICEF et d'autres partenaires.", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),
@@ -70,7 +70,7 @@ def init_scripts(site):
                      ],
         #Kirundi autoreg
         'autoreg ki':[     (False, "Kaze muri Ureport/Burundi, aho ushobora gutanga no kuronka inkuru ku bibera mu karere uherereyemwo, Ni KU BUNTU!", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),
-                           (Poll.TYPE_TEXT, 'reporter_group', "Woba uri umunywanyi mw'ishirahamwe ry'abitanga? Ishura EGO canke OYA hamwe n'izina ry'iryo Shirahamwe GUSA.", ScriptStep.WAIT_MOVEON, 0, False, 3600, 0,),
+                           (Poll.TYPE_TEXT, 'reporter_group', "Woba uri umunywanyi mw'ishirahamwe ry'abitanga? Ishura n'izina ry'iryo Shirahamwe GUSA.", ScriptStep.WAIT_MOVEON, 0, False, 3600, 0,),
                            (Poll.TYPE_LOCATION, 'reporter_reporting_location', "Tubwire akarere utangiramwo inkuru, bidufashe gukorera hamwe gutorera inyishu ingorane zo mu karere kanyu! Ishura izina ry'intara yawe GUSA", ScriptStep.STRICT_MOVEON, 0, 3600, 3600, 3,),
                            (Poll.TYPE_LOCATION, 'reporter_colline', "Ni uwuhe mutumba utangiramwo inkuru? Ishura izina ry'umutumba wawe GUSA.", ScriptStep.WAIT_MOVEON, 0, False, 3600, 0,),
                            (False, "Ureport Ni uburyo bwo kurungika ubutumwa ku buntu, bifashijwe n'intererano ya UNICEF n'ayandi mashiramwe.", ScriptStep.WAIT_MOVEON, 0, False, 60, 0,),

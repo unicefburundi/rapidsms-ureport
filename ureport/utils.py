@@ -15,6 +15,7 @@ from django.db import models, transaction, connection
 from poll.models import gettext_db
 from django.db.models import Q
 import datetime
+from django.conf import settings
 import re
 
 def get_language(message):
@@ -58,8 +59,8 @@ def get_contacts(**kwargs):
 
 def get_contacts2(**kwargs):
     request = kwargs.pop('request')
-
-    if request.user.is_authenticated() and hasattr(Contact, 'groups'):
+    admin_grp = getattr(settings, 'ADMIN_GROUP_NAME', 'admins')
+    if request.user.is_authenticated() and hasattr(Contact, 'groups') and request.user.groups.filter(name=admin_grp).count() == 0:
         q = None
         for f in request.user.groups.values_list('name',flat=True) :
             if not q:

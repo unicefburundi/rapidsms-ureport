@@ -365,9 +365,9 @@ def ureporters(request):
         ('Questions ', True, 'questions', SimpleSorter(),),
         ('Responses ', True, 'responses', SimpleSorter(),),
         ('Messages Sent', True, 'incoming', SimpleSorter(),),
-        ('caregiver', True, 'is_caregiver', SimpleSorter(),),
-        ('join date', True, 'autoreg_join_date', SimpleSorter(),),
-        ('quit date', True, 'quit_date', SimpleSorter(),),
+#        ('caregiver', True, 'is_caregiver', SimpleSorter(),),
+#        ('join date', True, 'autoreg_join_date', SimpleSorter(),),
+#        ('quit date', True, 'quit_date', SimpleSorter(),),
 ]
 
     return generic(request,

@@ -40,7 +40,7 @@ class AutoRegTest(TestCase): #pragma: no cover
         province = LocationType.objects.create(name='province', slug='province')
         colline = LocationType.objects.create(name='colline', slug='colline')
         self.root_node = Location.objects.create(type=country, name='Burundi')
-        self.bujumbura_province = Location.objects.create(type=province, name='Bujumbura')
+        self.bujumbura_province = Location.objects.create(type=province, name='Bujumbura Marie')
         self.kibenga_colline = Location.objects.create(type=colline, name='kibenga')
         
         # make celery tasks execute immediately (no redis)
@@ -101,7 +101,7 @@ class AutoRegTest(TestCase): #pragma: no cover
 
         params = [
             ('reporter_group_en', grp),\
-            ('reporter_reporting_location_en', 'Bujumbura'),\
+            ('reporter_reporting_location_en', 'Bujumbura M'),\
             ('reporter_colline_en', 'Kibenga'),\
             ('reporter_name_en', 'Testy Mctesterton'),\
             ('reporter_age_en', '22'),\
@@ -118,6 +118,7 @@ class AutoRegTest(TestCase): #pragma: no cover
         self.assertEquals(contact.reporting_location, self.bujumbura_province)
         self.assertEquals(contact.colline, self.kibenga_colline)
         print contact.groups.all()
+        self.assertEquals(contact.groups.count(), 1)
         self.assertEquals(contact.groups.all()[0].name, 'Red Cross')
         birth_date = datetime.datetime.now() - datetime.timedelta(days=(365 * 22))
         self.assertEquals(contact.birthdate.date(), birth_date.date())

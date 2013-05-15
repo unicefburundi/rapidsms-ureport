@@ -26,6 +26,7 @@ class UreportContact(models.Model):
     class Meta:
         db_table="ureport_contact"
         app_label = 'ureport'
+        
     def __unicode__(self):
         return '%s' % self.name
 

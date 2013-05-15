@@ -72,21 +72,26 @@ def autoreg(**kwargs):
         default_group = None
         if progress.language:
             contact.language = progress.language
-        if Group.objects.filter(name='Other Reporters').count():
-            default_group = Group.objects.get(name='Other Reporters')
-        if group_to_match and not gr_matched:
-
-            for g in re.findall(r'\w+', group_to_match):
-                if g:
-                    group = find_closest_match(str(g), Group.objects.exclude(name__in=["MP","delegate","CAO"]))
-                    if group:
-                        contact.groups.add(group)
-                        break
-
-            if default_group:
+#        if Group.objects.filter(name='Other Reporters').count():
+#            default_group = Group.objects.get(name='Other Reporters')
+        try:
+            default_group = Group.objects.get(name="Other Reporters")
+            if group_to_match and not gr_matched:
                 contact.groups.add(default_group)
-        elif default_group:
-            contact.groups.add(default_group)
+        except Group.DoesNotExist:
+            contact.groups.add(Group.objects.create(name="Other Reporters"))
+    
+#                for g in re.findall(r'\w+', group_to_match):
+#                    if g:
+#                        group = find_closest_match(str(g), Group.objects.exclude(name__in=["MP","delegate","CAO"]))
+#                        if group:
+#                            contact.groups.add(group)
+#                            break
+    
+#                if default_group:
+#                    contact.groups.add(default_group)
+#            elif default_group:
+#                contact.groups.add(default_group)
 
         if not contact.name:
             contact.name = 'Anonymous User'

@@ -8,6 +8,7 @@ from unregister.models import Blacklist
 from poll.models import Poll
 from django.conf import settings
 from ureport.models import QuoteBox
+from django.conf import settings
 
 
 def voices(request):
@@ -21,9 +22,9 @@ def voices(request):
     return {
         'total_ureporters':Contact.objects.exclude(connection__identity__in=Blacklist.objects.values_list('connection__identity')).count(),
         'polls':Poll.objects.exclude(contacts=None, start_date=None).exclude(pk__in=[297,296,349,350]).order_by('-start_date'),
-       'deployment_id':settings.DEPLOYMENT_ID,
+       'deployment_id': getattr(settings, 'DEPLOYMENT_ID', 1),
        'quote':quote,
-       'geoserver_url':settings.GEOSERVER_URL,
+       'geoserver_url': getattr(settings, 'GEOSERVER_URL' , None),
 
         }
 

@@ -1,66 +1,66 @@
-{% extends "generic/base.html" %}
+{% extends "generic/generic_base.html" %}
 {% block title %}
     uReporters - {{ block.super }}
 {% endblock %}
 {% block stylesheets %}
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}rapidsms/stylesheets/splits.css" />
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}rapidsms/stylesheets/modules.css" />
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}rapidsms/stylesheets/icons.css" />
-    <link type="text/css" rel="stylesheet" href="{{MEDIA_URL}}ureport/stylesheets/ureporters.css"/>
-<link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}ureport/stylesheets/ureport.min.css" />
-<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}ureport/stylesheets/modal.css"/>
+	<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/splits.css" />
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/modules.css" />
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/tables.css" />
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/forms.css" />
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/icons.css" />
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/base.css" />
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.css" />
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}ureport/stylesheets/ureporters.css"/>
+	<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}ureport/stylesheets/ureport.min.css" />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ureport/stylesheets/modal.css"/>
 {% endblock %}
-{% block javascripts %}
-        {%endblock%}
 {% block extra_js %}
-<link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}ureport/stylesheets/jquery-ui.css"/>
-<script type="text/javascript" src="{{ MEDIA_URL }}ureport/javascripts/jquery-ui.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}ureport/javascripts/tabs.js"></script>
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}ureport/stylesheets/jquery-ui.css"/>
+<script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/jquery-ui.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/tabs.js"></script>
 <script type="text/javascript">
 $(function() {
 $("#id_startdate").datepicker({ dateFormat: 'dd/mm/yy' ,changeYear: true ,changeMonth: true,minDate: new Date(2009, 1 - 1, 1) });
 $("#id_enddate").datepicker({ dateFormat: 'dd/mm/yy' ,changeYear: true ,changeMonth: true,minDate: new Date(2009, 1 - 1, 1) });
 });
-</script>
-   
+</script> 
 {% endblock %}
 
-
 {% block filters %}
-
             <div style="height:540px;" class="module">
                 <h2>Filters</h2>
-
             <table class="fc">
-
-                <tr>  <td>Search Ureporters :</td> <td>{{ filter_forms.0.searchx }}</td>  <td>Filter By Group :</td> <td>{{ filter_forms.4.visible_fields.0 }}</td>        </tr>
-                <tr>  <td>Filter By Gender :</td> <td>{{ filter_forms.1.gender }}</td> <td>Filter By District :</td> <td>{{ filter_forms.3.visible_fields.0}}</td>         </tr>
-                <tr>  <td>Filter By Age :</td> <td>{{ filter_forms.2.flag }}</td> <td>{{ filter_forms.2.age }}</td>          </tr>
-      
-                <tr><td></td><td></td>
-                    <td>
-                    <a href="javascript:void(0)" onclick="filter(this)" class="btn-primary btn btn-large">Update</a>
-                
-                   </td>
-                    <td>
-
-                    <a href="./" class="btn-primary btn btn-large">Clear</a>
-            
-                    </td>
+                <tr>  
+                	<td>Search Ureporters :</td> 
+                	<td>{{ filter_forms.0.searchx }}</td>  
+                	<td>Filter By Group :</td> 
+                	<td>{{ filter_forms.4.visible_fields.0 }}</td>        
                 </tr>
-            </table>
-
-
-
-           
+                <tr>  
+                	<td>Filter By Gender :</td> 
+                	<td>{{ filter_forms.1.gender }}</td> 
+                	<td>Filter By District :</td> 
+                	<td>{{ filter_forms.3.visible_fields.0}}</td>         
+                </tr>
+                <tr>  
+                	<td>Filter By Age :</td> 
+                	<td>{{ filter_forms.2.flag }}</td> 
+                	<td>{{ filter_forms.2.age }}</td>          
+                </tr>
+                <tr>
+                	<td></td>
+                	<td></td>
+                    <td><a href="javascript:void(0)" onclick="filter(this)" class="btn-primary btn btn-large">Update</a></td>
+                    <td><a href="./" class="btn-primary btn btn-large">Clear</a></td>
+                </tr>
+            </table>         
             </div>
             <br/>
-
         {% endblock %}
-
  {% block action_forms %}
 <div style="margin-top:10px;">
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-pills">
         <li class="active"><a href="#send_sms" data-toggle="tab">Send SMS </a></li>
         <li><a href="#assign_groups" data-toggle="tab">Assign Group</a></li>
         <li><a href="#remove_group" data-toggle="tab">Remove Group</a></li>
@@ -68,7 +68,6 @@ $("#id_enddate").datepicker({ dateFormat: 'dd/mm/yy' ,changeYear: true ,changeMo
         <li><a href="#send_poll" data-toggle="tab">Send Poll</a></li>
         <li><a href="#exports" data-toggle="tab">Export to excel</a></li>
         <li><a href="#send_custom" data-toggle="tab">Send Custom SMS</a></li>
-
     </ul>
 </div>
 <div class="tab-content">
@@ -114,7 +113,7 @@ $("#id_enddate").datepicker({ dateFormat: 'dd/mm/yy' ,changeYear: true ,changeMo
             </tr>
             {{download_form.as_table}}
             <tr><td><input type="submit" value="Download"></td></tr>
-            <tr><td>  <tr><td><a class="export_link" href="{{ MEDIA_URL }}ureport/spreadsheets/ureporters.zip">Export All To Excel</a></td></td></tr>
+            <tr><td>  <tr><td><a class="export_link" href="{{ STATIC_URL }}ureport/spreadsheets/ureporters.zip">Export All To Excel</a></td></td></tr>
         </table>
     </div>
     <div class="tab-pane " id="send_custom">
@@ -127,5 +126,4 @@ $("#id_enddate").datepicker({ dateFormat: 'dd/mm/yy' ,changeYear: true ,changeMo
 
 </div>
 
-
-                {% endblock %}
+{% endblock %}

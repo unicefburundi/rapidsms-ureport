@@ -36,14 +36,13 @@ from ureport.forms import UreporterSearchForm,AgeFilterForm
 
 @login_required
 def ureporter_profile(request, connection_pk):
-    from script.models import ScriptSession, ScriptResponse
+    from script.models import ScriptSession, ScriptResponse, Script
 
     connection = get_object_or_404(Connection, pk=connection_pk)
     session = ScriptSession.objects.filter(connection__pk=connection_pk)
 
 
-    messages =\
-    Message.objects.filter(connection=connection).order_by('-date')
+    messages = Message.objects.filter(connection=connection).order_by('-date')
     contact=connection.contact
     if contact:
         #get the proxy
@@ -55,12 +54,11 @@ def ureporter_profile(request, connection_pk):
     total_incoming = messages.filter(direction='I',
         connection__pk=connection_pk).count()
     try:
-        response_rate = contact.responses.values_list('poll'
-        ).distinct().count() * 100\
-        / float(Poll.objects.filter(contacts=contact).distinct().count())
+        response_rate = contact.responses.values_list('poll').distinct().count() * 100 / float(Poll.objects.filter(contacts=contact).distinct().count())
     except (ZeroDivisionError, ValueError):
         response_rate = None
-    gr_poll = Poll.objects.get(pk=121)
+#    gr_poll = Poll.objects.get(pk=121)
+    gr_poll = Script.objects.get(slug="autoreg_en").steps.get(order=1).poll
     how_did_u_hear = None
     if session:
         try:
@@ -75,18 +73,16 @@ def ureporter_profile(request, connection_pk):
         data.insert(0,['Message','Direction','Date','Mobile','Name','District'])
 
         return ExcelResponse(data=data)
-    columns = [('Message', True, 'text', SimpleSorter()), ('connection'
-                                                           , True, 'connection', SimpleSorter()), ('Date', True,
-                                                                                                   'date',
-                                                                                                   SimpleSorter()),
-        ('Direction', True, 'direction'
-         , SimpleSorter())]
+    columns = [
+               ('Message', True, 'text', SimpleSorter()), 
+               ('connection', True, 'connection', SimpleSorter()), 
+               ('Date', True, 'date', SimpleSorter()),
+               ('Direction', True, 'direction', SimpleSorter())
+               ]
 
     # hack hack send the reply message by hacking the sendmessage form
     if request.method == 'POST' :
-        if not request.POST.get('text', None) == u''\
-        and request.POST.get('action')\
-        == u'ureport.forms.ReplyTextForm' and not request.POST.get('page_action',None):
+        if not request.POST.get('text', None) == u'' and request.POST.get('action') == u'ureport.forms.ReplyTextForm' and not request.POST.get('page_action',None):
             rep_form=ReplyTextForm(request=request)
             Message.objects.create(
                 connection=connection, direction='O'
@@ -107,8 +103,7 @@ def ureporter_profile(request, connection_pk):
                 status_message_type='success',
                 results_title='Message History',
                 selectable=False,
-                partial_row='ureport/partials/messages/message_history_row.html'
-                ,
+                partial_row='ureport/partials/messages/message_history_row.html',
                 base_template='ureport/message_history_base.html',
                 action_forms=[ReplyTextForm],
                 columns=columns,
@@ -129,8 +124,7 @@ def ureporter_profile(request, connection_pk):
         reporter_form=reporter_form,
         results_title='Message History',
         selectable=False,
-        partial_row='ureport/partials/messages/message_history_row.html'
-        ,
+        partial_row='ureport/partials/messages/message_history_row.html',
         base_template='ureport/message_history_base.html',
         action_forms=[ReplyTextForm],
         columns=columns,
@@ -360,9 +354,9 @@ def ureporters(request):
         ('Age', True, 'age', SimpleSorter(),),
         ('Gender', True, 'gender', SimpleSorter(),),
         ('Language', True, 'language',SimpleSorter(),),
-        ('District', True, 'district', SimpleSorter(),),
+        ('Province', True, 'province', SimpleSorter(),),
         ('Group(s)', True, 'group', SimpleSorter(),),
-        ('Questions ', True, 'questions', SimpleSorter(),),
+        ('Polls ', True, 'questions', SimpleSorter(),),
         ('Responses ', True, 'responses', SimpleSorter(),),
         ('Messages Sent', True, 'incoming', SimpleSorter(),),
 #        ('caregiver', True, 'is_caregiver', SimpleSorter(),),
@@ -378,8 +372,9 @@ def ureporters(request):
         filter_forms=[ UreporterSearchForm,  GenderFilterForm, AgeFilterForm, MultipleDistictFilterForm,FilterGroupsForm ],
         action_forms=[MassTextForm, AssignGroupForm, BlacklistForm, AssignToNewPollForm,RemoveGroupForm,TemplateMessage],
         objects_per_page=25,
-        partial_row='ureport/partials/contacts/contacts_row.html',
         base_template='ureport/ureporters_base.html',
+        partial_base='ureport/partials/contacts/partial_base.html',
+        partial_row='ureport/partials/contacts/partial_row.html',
         paginator_template='ureport/partials/new_pagination.html',
         paginator_func=ureport_paginate,
          columns=columns,

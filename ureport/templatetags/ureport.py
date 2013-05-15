@@ -1,6 +1,8 @@
 from django import template
 
 from django.template import  Node, resolve_variable,Variable
+import math
+from django.conf import settings
 
 
 register = template.Library()
@@ -62,3 +64,21 @@ def add_get_parameter(parser, token):
     return AddGetParameter(values)
 
 register.tag('set', set_var)
+
+@register.filter(name='age')
+def age(value):
+    """Compute the age of an individual from days"""
+    if value > 100:
+        return int(math.floor((value/365)))
+    
+@register.filter(name='language_str')
+def language_str(value):
+    """Return the language str"""
+    language_tuple = getattr(settings, 'LANGUAGES', None)
+    if language_tuple:
+        for lang, lang_str in language_tuple:
+            if lang == value:
+                return lang_str
+                break
+    else:
+        return value

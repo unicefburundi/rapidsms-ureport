@@ -254,13 +254,27 @@ class AssignToNewPollForm(ActionForm):
 
     action_label = 'Assign to New poll'
     poll_name = forms.CharField(label='Poll Name', max_length='100')
-    POLL_TYPES = [('yn', 'Yes/No Question')] + [(c['type'], c['label'])
-            for c in Poll.TYPE_CHOICES.values()]
-    response_type = \
-        forms.ChoiceField(choices=Poll.RESPONSE_TYPE_CHOICES,
-                          widget=RadioSelect)
+    POLL_TYPES = [('yn', 'Yes/No Question')] + [(c['type'], c['label']) for c in Poll.TYPE_CHOICES.values()]
+    response_type = forms.ChoiceField(choices=Poll.RESPONSE_TYPE_CHOICES, widget=RadioSelect)
     poll_type = forms.ChoiceField(choices=POLL_TYPES)
-    question = forms.CharField(max_length=160, required=True,widget=SMSInput())
+    
+    def __init__(self, data=None, **kwargs):
+        self.request = kwargs.pop('request')
+        if data:
+            forms.Form.__init__(self, data, **kwargs)
+        else:
+            forms.Form.__init__(self, **kwargs)
+        
+        from django.conf import settings
+        languages = getattr(settings, 'LANGUAGES', (('en', 'English')))
+        i = 0
+        for lang, lang_verbose in languages:
+            form_name = 'question_%s' % lang
+            if i == 0:
+                self.fields[form_name] = forms.CharField(label=lang_verbose, max_length=160, required=True, widget=SMSInput())
+            else:
+                self.fields[form_name]  = forms.CharField(label=lang_verbose, max_length=160, required=False, widget=SMSInput())
+            i +=1
     default_response = forms.CharField(max_length=160, required=False,widget=SMSInput())
 
 
@@ -364,42 +378,83 @@ class ReplyTextForm(ActionForm):
                     'error')
 
 class MassTextForm(ActionForm):
+#    text_fr = forms.CharField(max_length=160, required=True, widget=SMSInput())
+#    text_ki = forms.CharField(max_length=160, required=False, widget=SMSInput())
+#    text_en = forms.CharField(max_length=160, required=False, widget=SMSInput())
 
-    text = forms.CharField(max_length=160, required=True, widget=SMSInput())
-    text_luo = forms.CharField(max_length=160, required=False, widget=SMSInput())
+    def __init__(self, data=None, **kwargs):
+        self.request = kwargs.pop('request')
+        if data:
+            forms.Form.__init__(self, data, **kwargs)
+        else:
+            forms.Form.__init__(self, **kwargs)
+        
+        from django.conf import settings
+        languages = getattr(settings, 'LANGUAGES', (('en', 'English')))
+        i = 0
+        for lang, lang_verbose in languages:
+            form_name = 'text_%s' % lang
+            if i == 0:
+                self.fields[form_name] = forms.CharField(label=lang_verbose, max_length=160, required=True, widget=SMSInput())
+            else:
+                self.fields[form_name]  = forms.CharField(label=lang_verbose, max_length=160, required=False, widget=SMSInput())
+            i +=1
 
     action_label = 'Send Message'
 
     def perform(self, request, results):
+        from poll.models import gettext_db
         if results is None or len(results) == 0:
             return ('A message must have one or more recipients!', 'error')
 
         if request.user and request.user.has_perm('contact.can_message'):
             blacklists = Blacklist.objects.values_list('connection')
-            connections = \
-                Connection.objects.filter(contact__in=results).exclude(pk__in=blacklists).distinct()
+            
+            #TODO: Revise for proper internationalization
+            languages = ["fr"]
+            text_fr = self.cleaned_data.get('text_fr', "")
+            text_fr = text_fr.replace('%', u'\u0025')
 
-            text = self.cleaned_data.get('text', "")
-            text = text.replace('%', u'\u0025')
-
-
-            if not self.cleaned_data['text_luo'] == '':
+            if not self.cleaned_data['text_en'] == '':
+                languages.append('en')
                 (translation, created) = \
-                    Translation.objects.get_or_create(language='ach',
-                        field=self.cleaned_data['text'],
-                        value=self.cleaned_data['text_luo'])
+                    Translation.objects.get_or_create(language='en',
+                        field=self.cleaned_data['text_fr'],
+                        value=self.cleaned_data['text_en'])
 
-
-
-            messages = Message.mass_text(text, connections)
-            contacts=Contact.objects.filter(pk__in=results)
-
-            MassText.bulk.bulk_insert(send_pre_save=False,
-                    user=request.user,
-                    text=text,
-                    contacts=list(contacts))
-            masstexts = MassText.bulk.bulk_insert_commit(send_post_save=False, autoclobber=True)
-            masstext = masstexts[0]
+            if not self.cleaned_data['text_ki'] == '':
+                languages.append('ki')
+                (translation, created) = \
+                    Translation.objects.get_or_create(language='ki',
+                        field=self.cleaned_data['text_fr'],
+                        value=self.cleaned_data['text_ki'])
+            
+            #Everyone gets a message in their language. This behavior may not be ideal
+            #since one may wish to send out a non translated message to everyone regardless of language
+            #TODO: allow sending of non translated message to everyone using a flag       
+            for language in languages:        
+                connections = Connection.objects.filter(contact__in=results.filter(language=language)).exclude(pk__in=blacklists).distinct()
+                messages = Message.mass_text(gettext_db(field=text_fr, language=language), connections)
+                contacts = Contact.objects.filter(pk__in=results)
+            
+            #Bulk wont work because of a ManyToMany relationship to Contact on MassText
+            #Django API does not allow bulk_create() to work with relation to multiple tables
+            #TODO: Find work around
+#            bulk_list = [
+#                     MassText(user=request.user),
+#                     MassText(text=text_fr),
+#                     MassText(contacts=list(contacts))
+#                     ]
+#            masstext = MassText.objects.bulk_create(bulk_list)
+            
+            #The bulk_insert manager needs to be updated
+            #TODO: investigate changes made in new Django that are not compatible with BulkInsertManager()
+#            MassText.bulk.bulk_insert(send_pre_save=False,
+#                    user=request.user,
+#                    text=text_fr,
+#                    contacts=list(contacts))
+#            masstexts = MassText.bulk.bulk_insert_commit(send_post_save=False, autoclobber=True)
+#            masstext = masstexts[0]
             
             return ('Message successfully sent to %d numbers' % len(connections), 'success',)
         else:

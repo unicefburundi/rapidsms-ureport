@@ -163,6 +163,38 @@ class AutoRegTest(TestCase): #pragma: no cover
         self.assertEquals(contact.birthdate.date(), birth_date.date())
         self.assertEquals(contact.gender, 'M')
         self.assertEquals(contact.default_connection, self.connection)
+        
+    def testBasicAutoRegScouts(self):
+        Script.objects.all().update(enabled=True)
+        self.register_reporter('join', 'Scout')
+        self.assertEquals(Contact.objects.count(), 1)
+        contact = Contact.objects.all()[0]
+        self.assertEquals(contact.name, 'Testy Mctesterton')
+        self.assertEquals(contact.reporting_location, self.bujumbura_province)
+        self.assertEquals(contact.colline, self.kibenga_colline)
+        print contact.groups.all()
+        self.assertEquals(contact.groups.count(), 1)
+        self.assertEquals(contact.groups.all()[0].name, 'Scouts')
+        birth_date = datetime.datetime.now() - datetime.timedelta(days=(365 * 22))
+        self.assertEquals(contact.birthdate.date(), birth_date.date())
+        self.assertEquals(contact.gender, 'M')
+        self.assertEquals(contact.default_connection, self.connection)
+        
+    def testBasicAutoRegGuides(self):
+        Script.objects.all().update(enabled=True)
+        self.register_reporter('join', 'Guides')
+        self.assertEquals(Contact.objects.count(), 1)
+        contact = Contact.objects.all()[0]
+        self.assertEquals(contact.name, 'Testy Mctesterton')
+        self.assertEquals(contact.reporting_location, self.bujumbura_province)
+        self.assertEquals(contact.colline, self.kibenga_colline)
+        print contact.groups.all()
+        self.assertEquals(contact.groups.count(), 1)
+        self.assertEquals(contact.groups.all()[0].name, 'Guides')
+        birth_date = datetime.datetime.now() - datetime.timedelta(days=(365 * 22))
+        self.assertEquals(contact.birthdate.date(), birth_date.date())
+        self.assertEquals(contact.gender, 'M')
+        self.assertEquals(contact.default_connection, self.connection)
                
     def testAutoregProgression(self):
         Script.objects.filter(slug='autoreg_en').update(enabled=True)
@@ -172,3 +204,27 @@ class AutoRegTest(TestCase): #pragma: no cover
         self.elapseTime(script_prog, 61)
         call_command('check_script_progress', e=8, l=24)
         self.assertEquals(Message.objects.filter(direction='O').order_by('-pk')[0].text, Script.objects.get(slug='autoreg_en').steps.get(order=0).message)
+        
+    def testAutoregProgressionFr(self):
+        Script.objects.filter(slug='autoreg_fr').update(enabled=True)
+        print Script.objects.all()
+        self.fake_incoming("s'inscrire")
+        script_prog = ScriptProgress.objects.get(connection__identity='8675309', script__slug='autoreg_fr')
+        self.elapseTime(script_prog, 61)
+        call_command('check_script_progress', e=8, l=24)
+        from poll.models import Translation
+        translated_message = Translation.objects.get(field = Script.objects.get(slug='autoreg_en').steps.get(order=0).message, language='fr')
+        print translated_message
+        self.assertEquals(Message.objects.filter(direction='O').order_by('-pk')[0].text, translated_message.value)
+        
+    def testAutoregProgressionKi(self):
+        Script.objects.filter(slug='autoreg_ki').update(enabled=True)
+        print Script.objects.all()
+        self.fake_incoming("Injira")
+        script_prog = ScriptProgress.objects.get(connection__identity='8675309', script__slug='autoreg_ki')
+        self.elapseTime(script_prog, 61)
+        call_command('check_script_progress', e=8, l=24)
+        from poll.models import Translation
+        translated_message = Translation.objects.get(field = Script.objects.get(slug='autoreg_en').steps.get(order=0).message, language='ki')
+        print translated_message
+        self.assertEquals(Message.objects.filter(direction='O').order_by('-pk')[0].text, translated_message.value)

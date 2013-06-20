@@ -195,6 +195,22 @@ class AutoRegTest(TestCase): #pragma: no cover
         self.assertEquals(contact.birthdate.date(), birth_date.date())
         self.assertEquals(contact.gender, 'M')
         self.assertEquals(contact.default_connection, self.connection)
+        
+    def testBasicAutoRegTeachers(self):
+        Script.objects.all().update(enabled=True)
+        self.register_reporter('join', 'Teachers')
+        self.assertEquals(Contact.objects.count(), 1)
+        contact = Contact.objects.all()[0]
+        self.assertEquals(contact.name, 'Testy Mctesterton')
+        self.assertEquals(contact.reporting_location, self.bujumbura_province)
+        self.assertEquals(contact.colline, self.kibenga_colline)
+        print contact.groups.all()
+        self.assertEquals(contact.groups.count(), 1)
+        self.assertEquals(contact.groups.all()[0].name, 'Teacher')
+        birth_date = datetime.datetime.now() - datetime.timedelta(days=(365 * 22))
+        self.assertEquals(contact.birthdate.date(), birth_date.date())
+        self.assertEquals(contact.gender, 'M')
+        self.assertEquals(contact.default_connection, self.connection)
                
     def testAutoregProgression(self):
         Script.objects.filter(slug='autoreg_en').update(enabled=True)
@@ -226,5 +242,12 @@ class AutoRegTest(TestCase): #pragma: no cover
         call_command('check_script_progress', e=8, l=24)
         from poll.models import Translation
         translated_message = Translation.objects.get(field = Script.objects.get(slug='autoreg_en').steps.get(order=0).message, language='ki')
-        print translated_message
         self.assertEquals(Message.objects.filter(direction='O').order_by('-pk')[0].text, translated_message.value)
+        
+    def testDoubleReg(self):
+        Script.objects.all().update(enabled=True)
+        self.register_reporter('join', 'Red Cross')
+        call_command('check_script_progress', e=8, l=24)
+        ScriptProgress.objects.all().delete()
+        self.fake_incoming('join')
+        self.assertEquals(Message.objects.filter(direction='O').order_by('-pk')[0].text, getattr(settings,'OPTED_IN_CONFIRMATION','')['en'])

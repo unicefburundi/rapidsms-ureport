@@ -54,6 +54,14 @@
             "name": "admins", 
             "permissions": []
         }
+    }, 
+    {
+        "pk": 6, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Teacher", 
+            "permissions": []
+        }
     },
     {
         "pk": 1, 
@@ -85,6 +93,14 @@
         "fields": {
             "values": "Scouts", 
             "group": 4
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "ureport.autoreggrouprules", 
+        "fields": {
+            "values": "Teacher,Umwigisha,Enseignant", 
+            "group": 6
         }
     },
     {

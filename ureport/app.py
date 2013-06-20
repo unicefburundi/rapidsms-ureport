@@ -18,8 +18,7 @@ class App(AppBase):
     def handle (self, message):
         language = get_language(message)
         scripts = get_scripts()
-#        opt_in_words = getattr(settings,'OPT_IN_CONFIRMATION','')
-        
+
         #dump new connections in Autoreg
         if not message.connection.contact and not\
         ScriptProgress.objects.filter(script__slug__in=scripts, connection=message.connection).exists():
@@ -29,21 +28,16 @@ class App(AppBase):
             prog = ScriptProgress.objects.create(script = Script.objects.get(pk = lang_scripts[language][1]), connection = message.connection)
             prog.language = language
             prog.save()
-            
-#            Message.objects.create(text=getattr(settings,'OPT_IN_CONFIRMATION',''), direction='O', connection=message.connection, status='Q')
-#            try:
-#                message.respond(opt_in_words[language])
-#            except:
-#                pass
-#            return True
         
-        #ignore subsequent join messages
+        #registering twice should not be allowed, user is informed
         elif message.text.lower().strip() in all_optin_words():
+            message.respond(getattr(settings,'OPTED_IN_CONFIRMATION','')[language])
+            from rapidsms_httprouter.models import Message
+            Message.objects.create(text=getattr(settings,'OPTED_IN_CONFIRMATION','')[language], direction='O', connection=message.connection, status='Q')
             return True
         
         #message flagging sfuff
         else:
-            
             #alerts (needs further investigations)
             if message.connection.contact:
                 alert_setting, _ = Settings.objects.get_or_create(attribute = "alerts")

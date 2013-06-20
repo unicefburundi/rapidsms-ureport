@@ -279,6 +279,25 @@ class AssignToNewPollForm(ActionForm):
 
 
     def perform(self, request, results):
+        #TODO: Deal with languages
+        languages = ["fr"]
+        question_fr = self.cleaned_data.get('question_fr', "")
+        question_fr = question_fr.replace('%', u'\u0025')
+
+        if not self.cleaned_data['question_en'] == '':
+            languages.append('en')
+            (translation, created) = \
+                Translation.objects.get_or_create(language='en',
+                    field=self.cleaned_data['question_fr'],
+                    value=self.cleaned_data['question_en'])
+
+        if not self.cleaned_data['question_ki'] == '':
+            languages.append('ki')
+            (translation, created) = \
+                Translation.objects.get_or_create(language='ki',
+                    field=self.cleaned_data['question_fr'],
+                    value=self.cleaned_data['question_ki'])
+                    
         if not len(results):
             return ('No contacts selected', 'error')
         name = self.cleaned_data['poll_name']
@@ -431,12 +450,14 @@ class MassTextForm(ActionForm):
             
             #Everyone gets a message in their language. This behavior may not be ideal
             #since one may wish to send out a non translated message to everyone regardless of language
-            #TODO: allow sending of non translated message to everyone using a flag       
+            #TODO: allow sending of non translated message to everyone using a flag   
+            total_connections = [] 
             for language in languages:        
                 connections = Connection.objects.filter(contact__in=results.filter(language=language)).exclude(pk__in=blacklists).distinct()
                 messages = Message.mass_text(gettext_db(field=text_fr, language=language), connections)
                 contacts = Contact.objects.filter(pk__in=results)
-            
+
+                total_connections.extend(connections)
             #Bulk wont work because of a ManyToMany relationship to Contact on MassText
             #Django API does not allow bulk_create() to work with relation to multiple tables
             #TODO: Find work around
@@ -456,7 +477,7 @@ class MassTextForm(ActionForm):
 #            masstexts = MassText.bulk.bulk_insert_commit(send_post_save=False, autoclobber=True)
 #            masstext = masstexts[0]
             
-            return ('Message successfully sent to %d numbers' % len(connections), 'success',)
+            return ('Message successfully sent to %d numbers' % len(total_connections), 'success',)
         else:
             return ("You don't have permission to send messages!", 'error',)
 

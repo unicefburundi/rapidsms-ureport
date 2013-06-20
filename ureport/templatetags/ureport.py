@@ -68,7 +68,7 @@ register.tag('set', set_var)
 @register.filter(name='age')
 def age(value):
     """Compute the age of an individual from days"""
-    if value > 100:
+    if value and value > 100:
         return int(math.floor((value/365)))
     
 @register.filter(name='language_str')

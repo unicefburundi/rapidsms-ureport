@@ -32,8 +32,6 @@ class App(AppBase):
         #registering twice should not be allowed, user is informed
         elif message.text.lower().strip() in all_optin_words():
             message.respond(getattr(settings,'OPTED_IN_CONFIRMATION','')[language])
-            from rapidsms_httprouter.models import Message
-            Message.objects.create(text=getattr(settings,'OPTED_IN_CONFIRMATION','')[language], direction='O', connection=message.connection, status='Q')
             return True
         
         #message flagging sfuff

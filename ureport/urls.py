@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls.defaults import *
+#from django.conf.urls.defaults import *
+from django.conf.urls import * #django.conf.urls.defaults deprecated in Django > 1.5
 from ureport.views import *
 from django.contrib.auth.decorators import login_required
 from generic.views import  generic_row

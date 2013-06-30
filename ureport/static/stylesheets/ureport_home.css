@@ -217,7 +217,6 @@ div.why-placeholder span {
 	height: auto;
 	overflow: hidden;
     margin-bottom:3px;
-
     width:160px;
 
 
@@ -324,28 +323,7 @@ div.why-placeholder span {
     margin-left:25px;
     margin-top:8px;
 }
-
-.poll-title {
-	margin-bottom:5px;
-	margin-top:5px;
-	font-size:14pt;
-	color:#00638a;
-}
-
-.poll-date {
-    color: #7d7d80;
-    font-size: 14px;
-}
-
-.poll-question {
-	margin-bottom:5px;
-	margin-top:5px;
-	font-size:16px;
-	display: block;
-	clear: left;
-}
  
-
 .scrolltop {
 	background: url('../images/scroller_top.png') no-repeat;
 	height: 35px;
@@ -584,11 +562,46 @@ ul.tabs li.selected .tab-label {
   		-moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.07) inset; /* FF3.5+ */
   		-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.07) inset; /* Saf3.0+, Chrome */
   		box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.07) inset; /* Opera 10.5, IE9, Chrome 10+ */
-  		
-
-
 }
-  	
+
+div#poll_results_transparent{
+	background: red url('../images/carte_bg.png') no-repeat right top;
+	position:absolute;
+	float:right;
+	z-index:1000;
+	width:131px;
+	height:127px;	
+}
+
+div.poll-details {
+	padding: 30px;
+}
+
+.poll-date {
+    color: #003300;
+    font-size: 1.4em;
+    font-weight:bold;
+}	
+
+.poll-question {
+	margin-bottom:5px;
+	margin-top:5px;
+	font-size:1.4em;
+	color:#003300;
+	font-weight:bold;
+}
+
+.poll-responses {
+	font-size: 1.4em;
+	font-weight:bold;
+}
+
+.poll-responses span {
+	font-size: 1.6em;
+	font-weight:bold;
+	color:#00A8FF;
+}
+
  .sayit{
   		background-color: white;
   		height: 60%;

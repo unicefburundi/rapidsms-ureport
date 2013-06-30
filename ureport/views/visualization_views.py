@@ -19,6 +19,7 @@ from eav.models import Value
 from poll.models import ResponseCategory, Response
 from ureport.views.utils.tags import _get_tags, _get_responses
 from django.db import transaction
+from django.conf import settings
 
 
 @transaction.autocommit
@@ -45,7 +46,8 @@ def best_visualization(request, poll_id=None):
     if poll.type == Poll.TYPE_TEXT and not  ResponseCategory.objects.filter(response__poll=poll):
         dict.update({'tags': _get_tags(polls),
                     'responses': _get_responses(poll),
-                    'poll_id': poll.pk})
+                    'poll_id': poll.pk,
+                    'map_bounds':settings.OPEN_LAYERS_MAP_BOUNDS})
     return render_to_response('ureport/partials/viz/best_visualization.html'
                               , dict,
                               context_instance=RequestContext(request))

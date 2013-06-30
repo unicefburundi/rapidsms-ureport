@@ -27,8 +27,7 @@
         <li>
             <span class="poll-date">{{ p.start_date|date:"d/M/Y" }}</span> :
             {{ p.question }}
-            <a href="javascript:void(0)" 
-               onclick="clear_layers();$('#viz').load('{% url ureport.views.best_visualization p.pk %}')">See results</a>
+            <a href="javascript:void(0)" onclick="clear_layers();$('#viz').load('{% url "ureport.views.best_visualization" p.pk %}')">See results</a>
         </li>
     {%endif%}
     {% endfor %}

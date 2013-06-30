@@ -1,3 +1,4 @@
+<!--
 <h4 class="poll-heading">
 <span class="poll-title">
 CURRENT POLL
@@ -6,16 +7,11 @@ CURRENT POLL
  - {{ poll.start_date|date:"d/M/Y" }} : 
 </span>
 <span class="poll-question">
-{{ poll.question }}
-
-
-
-
-    
+{{ poll.question }} 
 </span>
      {% load humanize %}
     <span style="color:#00638A;font-size:16px;">{{ poll.responses.count|intcomma }}  Responses out of {{ poll.contacts.count|intcomma }} Participants ({{ rate }}%)</span>
-</h4>
+</h4> -->
 {% if tags %}
 
     {% include "/ureport/partials/tag_cloud/tag_cloud.html" %}

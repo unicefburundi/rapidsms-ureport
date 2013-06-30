@@ -306,15 +306,14 @@ class AssignToNewPollForm(ActionForm):
         if poll_type == NewPollForm.TYPE_YES_NO:
             poll_type = Poll.TYPE_TEXT
 
-        question = self.cleaned_data.get('question').replace('%',
-                u'\u0025')
+#        question = self.cleaned_data.get('question').replace('%', u'\u0025')
         default_response = self.cleaned_data['default_response']
         response_type = self.cleaned_data['response_type']
         contacts=Contact.objects.filter(pk__in=results)
         poll = Poll.create_with_bulk(
             name=name,
             type=poll_type,
-            question=question,
+            question=question_fr,
             default_response=default_response,
             contacts=contacts,
             user=request.user

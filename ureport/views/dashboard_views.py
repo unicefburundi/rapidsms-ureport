@@ -12,7 +12,7 @@ from uganda_common.utils import ExcelResponse
 from rapidsms_httprouter.models import Message
 
 from ureport.forms import AssignResponseGroupForm, SelectPoll, \
-    NewPollForm, rangeForm,DistrictForm
+    NewPollForm, rangeForm, DistrictForm
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from rapidsms.models import Contact, Connection
@@ -20,13 +20,14 @@ from unregister.models import Blacklist
 from poll.models import Translation, Poll
 from ureport.models import MessageAttribute, AlertsExport, Settings, \
     MessageDetail
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import EmptyPage, PageNotAnInteger
 import datetime
 from ureport.views.utils.paginator import UreportPaginator
-from django.db import transaction
-from contact.models import Flag, MessageFlag
+from contact.models import Flag
 from django.db.models import Q
-
+from ureport.settings import UREPORT_ROOT
+from ureport.utils import get_access
+import os
 
 
 @login_required
@@ -34,17 +35,8 @@ def mp_dashboard(request):
     from contact.forms import FilterGroupsForm, \
         MultipleDistictFilterForm, GenderFilterForm, AgeFilterForm
 
-    groupform = AssignResponseGroupForm(request=request)
-    if request.method == 'POST' and request.POST.get('groups', None):
-        g_form = AssignResponseGroupForm(request.POST, request=request)
-        if g_form.is_valid():
-            request.session['groups'] = g_form.cleaned_data['groups']
-    if not request.session.get('groups', None):
-        mp_contacts = Contact.objects.filter(groups__name__in=['MP'])
-    else:
-        mp_contacts = \
-            Contact.objects.filter(groups__in=request.session.get('groups'
-                                   ))
+    mp_contacts = Contact.objects.filter(groups__name__in=['MP'])
+
     forms = [MultipleDistictFilterForm, FilterGroupsForm,
              GenderFilterForm, AgeFilterForm]
     filter_forms = []
@@ -52,11 +44,11 @@ def mp_dashboard(request):
     contacts = \
         Contact.objects.exclude(connection__in=Blacklist.objects.all()).distinct()
     message_list = Message.objects.filter(connection__in=mp_conns,
-            direction='I').order_by('-date')
+                                          direction='I').order_by('-date')
     if request.GET.get('ajax', None):
         date = datetime.datetime.now() - datetime.timedelta(seconds=15)
         msgs = Message.objects.filter(connection__in=mp_conns,
-                direction='I').filter(date__gte=date)
+                                      direction='I').filter(date__gte=date)
         msgs_list = []
         if msgs:
             for msg in msgs:
@@ -122,26 +114,26 @@ def mp_dashboard(request):
             response_type = poll_form.cleaned_data['response_type']
             question = poll_form.cleaned_data['question']
             default_response = poll_form.cleaned_data['default_response'
-                    ]
+            ]
 
             if not poll_form.cleaned_data['default_response_luo'] == '' \
                 and not poll_form.cleaned_data['default_response'] \
-                == '':
+                            == '':
                 (translation, created) = \
                     Translation.objects.get_or_create(language='ach',
-                        field=poll_form.cleaned_data['default_response'
-                        ],
-                        value=poll_form.cleaned_data['default_response_luo'
-                        ])
+                                                      field=poll_form.cleaned_data['default_response'
+                                                      ],
+                                                      value=poll_form.cleaned_data['default_response_luo'
+                                                      ])
 
             if not poll_form.cleaned_data['question_luo'] == '':
                 (translation, created) = \
                     Translation.objects.get_or_create(language='ach',
-                        field=poll_form.cleaned_data['question'],
-                        value=poll_form.cleaned_data['question_luo'])
+                                                      field=poll_form.cleaned_data['question'],
+                                                      value=poll_form.cleaned_data['question_luo'])
 
             poll_type = (Poll.TYPE_TEXT if p_type
-                         == NewPollForm.TYPE_YES_NO else p_type)
+                                           == NewPollForm.TYPE_YES_NO else p_type)
 
             poll = Poll.create_with_bulk(
                 name,
@@ -150,46 +142,57 @@ def mp_dashboard(request):
                 default_response,
                 request.session.get('filtered'),
                 request.user,
-                )
+            )
             return redirect(reverse('poll.views.view_poll',
-                            args=[poll.pk]))
+                                    args=[poll.pk]))
 
     context_dict = {
         'poll_form': poll_form,
         'filter_forms': filter_forms,
         'messages': messages,
-        'groupform': groupform,
-        }
+    }
 
     return render_to_response('ureport/mp_dashboard.html',
                               context_dict,
                               context_instance=RequestContext(request))
 
 
-
-
-
 @login_required
 def alerts(request):
-    select_poll = SelectPoll()
+    access = get_access(request)
     poll_form = NewPollForm()
     range_form = rangeForm()
     poll_form.updateTypes()
-    assign_polls=Poll.objects.exclude(start_date=None).order_by('-pk')[0:5]
-    district_form=DistrictForm(request.POST or None)
-    if request.GET.get('reset_districts',None):
-        request.session['districts']=None
+    assign_polls = Poll.objects.exclude(start_date=None).order_by('-pk')[0:5]
+    district_form = DistrictForm(request.POST or None)
+    if request.GET.get('reset_districts', None):
+        request.session['districts'] = None
+        request.session['groups'] = None
 
     if district_form.is_valid():
-        request.session['districts']=[c.pk for c in district_form.cleaned_data['districts']]
+        request.session['districts'] = [c.pk for c in district_form.cleaned_data['districts']]
+
+    groupform = AssignResponseGroupForm(request=request, access=access)
+    if request.method == 'POST' and request.POST.get('groups', None):
+        g_form = AssignResponseGroupForm(request.POST, request=request)
+        if g_form.is_valid():
+            request.session['groups'] = g_form.cleaned_data['groups']
+
     template = 'ureport/polls/alerts.html'
     if request.session.get('districts'):
         message_list = \
             Message.objects.filter(details__attribute__name='alert'
-                                   ).filter(connection__contact__reporting_location__in=request.session.get('districts')).order_by('-date')
-    else:
-        message_list =Message.objects.filter(details__attribute__name='alert').order_by('-date')
 
+            ).filter(connection__contact__reporting_location__in=request.session.get('districts'))
+    else:
+        message_list = Message.objects.filter(details__attribute__name='alert')
+
+    if request.session.get('groups', None):
+        message_list = message_list.filter(connection__contact__groups__in=request.session.get('groups'
+        ))
+
+    if access:
+        message_list = message_list.filter(connection__contact__groups__in=access.groups.all())
     (capture_status, _) = \
         Settings.objects.get_or_create(attribute='alerts')
     (rate, _) = MessageAttribute.objects.get_or_create(name='rating')
@@ -197,46 +200,54 @@ def alerts(request):
     # message_list=[Message.objects.latest('date')]
     # use more efficient count
 
-    if request.GET.get('download', None):
-        #import pdb;pdb.set_trace()
+    if request.GET.get('download', None) and access is None:
         range_form = rangeForm(request.POST)
         if range_form.is_valid():
-
             start = range_form.cleaned_data['startdate']
             end = range_form.cleaned_data['enddate']
+            from django.core.servers.basehttp import FileWrapper
 
-            data = list(AlertsExport.objects.filter(date__range=(start, end)).values())
-            #save some memory
+            cols = ["replied", "rating", "direction", "district", "date", "message", "id",
+                    "forwarded"]
+            data = AlertsExport.objects.filter(date__range=(start, end)).values_list(*cols).iterator()
+            excel_file_path = \
+                os.path.join(os.path.join(os.path.join(UREPORT_ROOT,
+                                                       'static'), 'spreadsheets'),
+                             'alerts.xlsx')
+            ExcelResponse(data, output_name=excel_file_path,
+                          write_to_file=True, headers=cols)
+            response = HttpResponse(FileWrapper(open(excel_file_path)),
+                                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename=alerts.xlsx'
             from django import db
+
             db.reset_queries()
-            res=ExcelResponse(data=data)
-            res['Cache-Control'] = 'no-cache'
-            return res
+            response['Cache-Control'] = 'no-cache'
+            return response
 
-
-    if request.GET.get('search',None):
-        search=request.GET.get('search')
+    if request.GET.get('search', None):
+        search = request.GET.get('search')
         if search[0] == '"' and search[-1] == '"':
             search = search[1:-1]
             message_list = message_list.filter(Q(text__iregex=".*\m(%s)\y.*"
-                                                           % search)
-                                   | Q(connection__contact__reporting_location__name__iregex=".*\m(%s)\y.*"
-                                                                                                      % search)
-                                   | Q(connection__identity__iregex=".*\m(%s)\y.*"
-                                                                             % search))
+                                                              % search)
+                                               | Q(connection__contact__reporting_location__name__iregex=".*\m(%s)\y.*"
+                                                                                                         % search)
+                                               | Q(connection__pk__iregex=".*\m(%s)\y.*"
+                                                                          % search))
         elif search[0] == "'" and search[-1] == "'":
 
             search = search[1:-1]
             message_list = message_list.filter(Q(text__iexact=search)
-                                   | Q(connection__contact__reporting_location__name__iexact=search)
-                                   | Q(connection__identity__iexact=search))
+                                               | Q(connection__contact__reporting_location__name__iexact=search)
+                                               | Q(connection__pk__iexact=search))
         elif search == "=numerical value()":
             message_list = message_list.filter(text__iregex="(-?\d+(\.\d+)?)")
         else:
 
             message_list = message_list.filter(Q(text__icontains=search)
-                                   | Q(connection__contact__reporting_location__name__icontains=search)
-                                   | Q(connection__identity__icontains=search))
+                                               | Q(connection__contact__reporting_location__name__icontains=search)
+                                               | Q(connection__pk__icontains=search))
 
     if request.GET.get('capture', None):
         (s, _) = Settings.objects.get_or_create(attribute='alerts')
@@ -253,19 +264,23 @@ def alerts(request):
         date = datetime.datetime.now() - datetime.timedelta(seconds=30)
         prev = request.session.get('prev', [])
         msgs = Message.objects.filter(details__attribute__name='alert',
-                direction='I'
-                ).filter(date__gte=date).exclude(pk__in=prev)
+                                      direction='I'
+        ).filter(date__gte=date).exclude(pk__in=prev)
+        if access:
+            msgs = msgs.filter(connection__contact__groups__in=access.groups.all())
         request.session['prev'] = list(msgs.values_list('pk',
-                flat=True))
+                                                        flat=True))
         msgs_list = []
         if msgs:
             for msg in msgs:
                 from django.template.loader import render_to_string
-                can_view_number=request.user.has_perm('view_numbers')
-                can_foward=request.user.has_perm('forward')
+
+                can_view_number = request.user.has_perm('view_numbers')
+                can_foward = request.user.has_perm('forward')
                 row_rendered = \
                     render_to_string('ureport/partials/row.html',
-                        {'msg': msg,'can_foward':can_foward,'can_view_number':can_view_number,'assign_polls':assign_polls})
+                                     {'msg': msg, 'can_foward': can_foward, 'can_view_number': can_view_number,
+                                      'assign_polls': assign_polls})
 
                 m = {}
                 m['text'] = msg.text
@@ -301,12 +316,12 @@ def alerts(request):
             '3': 'Important',
             '4': 'Urgent',
             '5': 'Very Urgent',
-            }
+        }
         msg = Message.objects.get(pk=int(request.GET.get('msg')))
         (rate, _) = MessageAttribute.objects.get_or_create(name='rating'
-                )
+        )
         det = MessageDetail.objects.create(message=msg, attribute=rate,
-                value=rating, description=descs.get(rating, ''))
+                                           value=rating, description=descs.get(rating, ''))
         response = \
             """<li><a href='javascript:void(0)'  class="rate%s"
 
@@ -315,7 +330,7 @@ def alerts(request):
 
         return HttpResponse(mark_safe(response))
 
-    paginator = UreportPaginator(message_list, 10, body=12, padding=2)
+    paginator = UreportPaginator(message_list.order_by('-date'), 10, body=12, padding=2)
     page = request.GET.get('page', 1)
     try:
         messages = paginator.page(page)
@@ -327,25 +342,28 @@ def alerts(request):
 
     return render_to_response(template, {
         'messages': messages,
-        'assign_polls':assign_polls,
+        'assign_polls': assign_polls,
         'paginator': paginator,
         'capture_status': capture_status,
         'rate': rate,
-        'district_form':district_form,
+        'district_form': district_form,
         'range_form': range_form,
-        }, context_instance=RequestContext(request))
+        'groupform': groupform,
+    }, context_instance=RequestContext(request))
 
 
-def remove_captured_ind(request,pk):
-    msg=Message.objects.get(pk=pk)
-    ma=MessageDetail.objects.filter(message=msg).delete()
+def remove_captured_ind(request, pk):
+    msg = Message.objects.get(pk=pk)
+    ma = MessageDetail.objects.filter(message=msg).delete()
     return HttpResponse(status=200)
 
-def assign_poll(request,pk,poll):
-   message=Message.objects.get(pk=pk)
-   poll=Poll.objects.get(pk=poll)
-   poll.process_response(message)
-   return HttpResponse(status=200)
+
+def assign_poll(request, pk, poll):
+    message = Message.objects.get(pk=pk)
+    poll = Poll.objects.get(pk=poll)
+    poll.process_response(message)
+    return HttpResponse(status=200)
+
 
 @login_required
 def remove_captured(request):
@@ -355,14 +373,15 @@ def remove_captured(request):
         end = range_form.cleaned_data['enddate']
         message_list = \
             Message.objects.filter(details__attribute__name='alert'
-                                   ).filter(date__range=(start, end))
+            ).filter(date__range=(start, end))
         alert = MessageAttribute.objects.get(name='alert')
         mesg_details = \
             MessageDetail.objects.filter(message__in=message_list,
-                attribute=alert).delete()
+                                         attribute=alert).delete()
         return HttpResponse('success')
 
     return HttpResponse('Sucessfully deleted')
+
 
 @login_required
 def aids_dashboard(request):
@@ -372,17 +391,15 @@ def aids_dashboard(request):
     poll_form.updateTypes()
     template = 'ureport/aids_dashboard.html'
 
-    (capture_status, _) =\
-    Settings.objects.get_or_create(attribute='aids')
+    (capture_status, _) = \
+        Settings.objects.get_or_create(attribute='aids')
     (rate, _) = MessageAttribute.objects.get_or_create(name='rating')
-    flag=Flag.objects.get(name="HIV")
-    messages=flag.get_messages().order_by('-date')
-
-
+    flag = Flag.objects.get(name="HIV")
+    messages = flag.get_messages().order_by('-date')
 
     if request.GET.get('download', None):
-
-        export_data=messages.values_list('text','connection__identity','connection__contact__name','connection__contact__reporting_location__name')
+        export_data = messages.values_list('connection__pk', 'text', 'connection__identity',
+                                           'connection__contact__reporting_location__name').iterator()
         return ExcelResponse(data=export_data)
     if request.GET.get('capture', None):
         (s, _) = Settings.objects.get_or_create(attribute='aids')
@@ -400,14 +417,15 @@ def aids_dashboard(request):
         prev = request.session.get('prev', [])
         msgs = flag.get_messages().filter(date__gte=date).exclude(pk__in=prev)
         request.session['prev'] = list(msgs.values_list('pk',
-            flat=True))
+                                                        flat=True))
         msgs_list = []
         if msgs:
             for msg in msgs:
                 from django.template.loader import render_to_string
-                row_rendered =\
-                render_to_string('ureport/partials/row.html',
-                    {'msg': msg})
+
+                row_rendered = \
+                    render_to_string('ureport/partials/row.html',
+                                     {'msg': msg})
 
                 m = {}
                 m['text'] = msg.text
@@ -417,10 +435,10 @@ def aids_dashboard(request):
                 else:
                     m['name'] = 'Anonymous User'
                 m['number'] = msg.connection.identity
-                if msg.connection.contact\
-                and msg.connection.contact.reporting_location:
-                    m['district'] =\
-                    msg.connection.contact.reporting_location.name
+                if msg.connection.contact \
+                    and msg.connection.contact.reporting_location:
+                    m['district'] = \
+                        msg.connection.contact.reporting_location.name
                 else:
                     m['district'] = 'N/A'
                 rating = msg.details.filter(attribute__name='aids')
@@ -443,17 +461,17 @@ def aids_dashboard(request):
             '3': 'Important',
             '4': 'Urgent',
             '5': 'Very Urgent',
-            }
+        }
         msg = Message.objects.get(pk=int(request.GET.get('msg')))
         (rate, _) = MessageAttribute.objects.get_or_create(name='rating'
         )
         det = MessageDetail.objects.create(message=msg, attribute=rate,
-            value=rating, description=descs.get(rating, ''))
-        response =\
-        """<li><a href='javascript:void(0)'  class="rate%s"
+                                           value=rating, description=descs.get(rating, ''))
+        response = \
+            """<li><a href='javascript:void(0)'  class="rate%s"
 
-        title="%s">%s</a></li>"""\
-        % (rating, descs.get(rating, ''), descs.get(rating, ''))
+        title="%s">%s</a></li>""" \
+            % (rating, descs.get(rating, ''), descs.get(rating, ''))
 
         return HttpResponse(mark_safe(response))
 
@@ -473,10 +491,11 @@ def aids_dashboard(request):
         'capture_status': capture_status,
         'rate': rate,
         'range_form': range_form,
-        }, context_instance=RequestContext(request))
+    }, context_instance=RequestContext(request))
+
 
 def schedule_alerts(request):
-    mps=Contact.objects.filter(groups__name="MP")
+    mps = Contact.objects.filter(groups__name="MP")
 
     render_to_response("mp_alerts.html", dict(), context_instance=RequestContext(request))
 

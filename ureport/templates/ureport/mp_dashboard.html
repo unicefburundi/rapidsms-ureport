@@ -40,14 +40,7 @@
 {% endblock %}
 
 {% block content %}
-    <div>
-    <form action="" method="post" data-remote=true>
-        Filter Group
-        {{ groupform.groups }}
 
-        <input type="submit" value="filter group" data-disable-with="Filtering......" >
-    </form>
-    </div>
     <div class="module">
         <h2>Filter Poll Contacts</h2>
         
@@ -101,9 +94,9 @@
 
                 <tr><td>{{ poll_form.errors }}</td></tr>
 
-                <tr><td>Name:</td><td>{{ poll_form.name}}</td><td>Question:</td><td>{{ poll_form.question}}</td> <td><input type="submit" class="btn-primary btn btn-large" value="Send Poll"></td></tr>
+                <tr><td>Name:</td><td>{{ poll_form.name}}</td><td>Question:</td><td>{{ poll_form.question_en}}</td> <td><input type="submit" class="btn-primary btn btn-large" value="Send Poll"></td></tr>
                 <tr><td>Type:</td><td>{{ poll_form.type}}</td><td>Luo Question:</td><td>{{ poll_form.question_luo}}</td><td></td></tr>
-                <tr><td>Response Type:</td><td>{{ poll_form.response_type}}</td><td>Auto Response:</td><td>{{ poll_form.default_response}}</td><td></td></tr>
+                <tr><td>Response Type:</td><td>{{ poll_form.response_type}}</td><td>Auto Response:</td><td>{{ poll_form.default_response_en}}</td><td></td></tr>
                 <tr><td></td><td></td><td>Auto Response Luo:</td><td>{{ poll_form.default_response_luo}}</td><td></td></tr>
 
 
@@ -122,10 +115,10 @@
         <table class="zebra-striped bordered fc" width="100%" id="mps">
             <thead>
             <tr>
+                <th>Identifier</th>
+                <td>Name</td>
                 <th>Text</th>
                 <th>Date</th>
-                <th>Name</th>
-                <th>Number</th>
                 <th>District</th>
                 <th>Group(s)</th>
             </tr>
@@ -133,10 +126,10 @@
             <tbody id="mp_bd">
             {% for msg in messages.object_list %}
                 <tr>
+                    <td><a href="/messagehistory/{{ msg.connection.pk }}/">{{ msg.connection_id }}</a></td>
+                    <td>{{ msg.connection.contact.name }}</td>
                     <td>{{ msg.text }}</td>
                     <td>{{ msg.date|date:"m/d/Y H:i:s" }}</td>
-                    <td>{{ msg.connection.contact.name }}</td>
-                    <td><a href="/messagehistory/{{ msg.connection.pk }}/">{{ msg.connection.identity }}</a></td>
                     <td>{{ msg.connection.contact.reporting_location }}</td>
                     <td><ul>
                         {% for gr in msg.connection.contact.groups.all %}

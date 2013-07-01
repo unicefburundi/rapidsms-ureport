@@ -1,4 +1,5 @@
 from django import template
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.template import  Node, resolve_variable,Variable
 import math

@@ -56,7 +56,7 @@
 	                   <li><a href="{% url ureport-contact %}">UREPORTERS</a></li>
 	                   <li><a href="{% url flaggedmessages %}">FLAGGED MESSAGES</a></li>
                          <li><a href="{% url mp_dashboard %}">MP BARAZA</a></li>
-                        <li><a href="{% url classifier %}">MESSAGE CLASSIFICATION</a></li>
+                        <li><a href="{% url classifier %}">A-CLASS</a></li>
                         <li><a href="{% url alerts %}">Real Time</a></li>
 	                {% else %}
 	                   <li><a href="/accounts/login">LOGIN</a></li>
@@ -77,6 +77,7 @@
 	           <img src="{{ STATIC_URL }}ureport/images/scouts_logo.png"/>
 	           <img src="{{ STATIC_URL }}ureport/images/cou_logo.png"/>
 	           <img src="{{ STATIC_URL }}ureport/images/gem_logo.png"/>
+	           <img src="{{ STATIC_URL }}ureport/images/ibm_logo.jpg" />
 	       </div>
 	       <div class="footerlinks">
 	           <div class="nav-bottom">
@@ -93,14 +94,14 @@
 	                   <li><a href="{% url ureport-contact %}">UREPORTERS</a></li>
 	                   <li><a href="{% url flaggedmessages %}">FLAGGED MESSAGES</a></li>
                         <li><a href="{% url mp_dashboard %}">MP BARAZA</a></li>
-                         <li><a href="{% url classifier %}">MESSAGE CLASSIFICATION</a></li>
-                    <li><a href="{% url alerts %}">Real Time</a></li>
+                         <li><a href="{% url classifier %}">A-CLASS</a></li>
+                    <li><a href="{% url alerts %}">REAL TIME</a></li>
 	                {% else %}
 	                   <li><a href="/accounts/login">LOGIN</a></li>
 	                {% endif %}
                 </ul>
 	           </div>
-	           <p>Copyright &copy; 2010 - 2011 UNICEF et al.</p>
+	           <p>Copyright &copy; 2010 - 2012 UNICEF et al.</p>
 	           <p>RapidSMS and Ureport are available under the BSD license.</p>
 	        </div>
 	    </div>

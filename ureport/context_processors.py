@@ -5,10 +5,21 @@ and returns a dictionary to add to the context.
 """
 from rapidsms.models import Contact
 from unregister.models import Blacklist
-from poll.models import Poll
+from ureport.models.models import UPoll as Poll
 from django.conf import settings
 from ureport.models import QuoteBox
 from django.conf import settings
+
+
+def has_valid_pagination_limit(settings):
+    try:
+        pagination_limit = settings.PAGINATION_LIMIT
+
+        if isinstance(pagination_limit, int):
+            return True
+        return False
+    except AttributeError:
+        return False
 
 
 def voices(request):
@@ -16,17 +27,23 @@ def voices(request):
     a context processor that passes the total number of ureporters to all templates.
     """
     try:
-        quote=QuoteBox.objects.latest()
+        quote = QuoteBox.objects.latest()
     except QuoteBox.DoesNotExist:
-        quote=None
-    return {
-        'total_ureporters':Contact.objects.exclude(connection__identity__in=Blacklist.objects.values_list('connection__identity')).count(),
-        'polls':Poll.objects.exclude(contacts=None, start_date=None).exclude(pk__in=[297,296,349,350]).order_by('-start_date'),
-       'deployment_id': getattr(settings, 'DEPLOYMENT_ID', 1),
-       'quote':quote,
-       'geoserver_url': getattr(settings, 'GEOSERVER_URL' , None),
+        quote = None
 
-        }
+    context = {
+        'total_ureporters': Contact.objects.exclude(
+            connection__identity__in=Blacklist.objects.values_list('connection__identity', flat=True)).count(),
+        'polls': Poll.objects.exclude(contacts=None, start_date=None).exclude(pk__in=[297, 296, 349, 350]).order_by(
+                '-start_date'),
+        'deployment_id': getattr(settings, 'DEPLOYMENT_ID', 1),
+        'quote': quote,
+        'geoserver_url': getattr(settings, 'GEOSERVER_URL', None),
+        'show_contact_info': getattr(settings, 'SHOW_CONTACT_INFO', True)
+    }
 
-
-
+    if has_valid_pagination_limit(settings):
+        context['polls'] = Poll.objects.exclude(contacts=None, start_date=None).exclude(
+            pk__in=[297, 296, 349, 350]).order_by(
+            '-start_date')[:settings.PAGINATION_LIMIT]
+    return context

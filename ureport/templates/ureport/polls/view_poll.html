@@ -80,6 +80,12 @@
         {%block top_js %}
 
         <script type="text/javascript">
+            function loadViewable(href){
+
+
+                    $('#state_h').load(href);
+
+            }
 
             function bind_ruleform(){
                 $("#rule_form").bind('ajax:before',function (exhr, status, error) {
@@ -124,19 +130,22 @@
                 jQuery(".best_in_place").best_in_place();
 
 
-                $('#poll_action').bind('ajax:before',function (exhr, status, error) {
-                    ajax_loading('#poll_action');
-
-                }).bind('ajax:success', function (evt, data, status, xhr) {
-
-                            $('#state').html(xhr.responseText);
-                            $('#state').effect("highlight", {}, 3000);
-                            $('.ajax_loading').remove();
-                        });
+                bind_poll_action()
 
 
 
             });
+
+            function bind_poll_action() {
+                $('#poll_action')
+                   .bind('ajax:before',function (exhr, status, error) { ajax_loading('#poll_action');})
+                   .bind('ajax:success', function (evt, data, status, xhr) {
+                            $('#state').html(xhr.responseText);
+                            $('#state').effect("highlight", {}, 3000);
+                            $('.ajax_loading').remove();
+                            bind_poll_action();
+                   });
+            }
 
         </script>
 
@@ -170,10 +179,15 @@ color:#666;">Response:
 </div>
 {%if not  poll.start_date%}
 <span id="state" >
-<a href="?start=True?&poll=True" data-remote=true  id="poll_action" class="btn">Start Poll</a>
+<a href="?start=True?&poll=True" data-remote=true  id="poll_action" class="btn">{% if FEATURE_PREPARE_SEND_POLL %}Prepare Poll{%else%}Start Poll{%endif%}</a>
 </span>
 click on question to edit
-        {%else%}
+{%else%}
+    {%if FEATURE_PREPARE_SEND_POLL and poll.is_ready_to_send %}
+<span id="state" >
+<a href="?send=True?&poll=True" data-remote=true  id="poll_action" class="btn">Send Poll</a>
+</span>
+    {%else%}
         {% if not poll.end_date %}
 <span id="state" >
 <a href="?stop=True&poll=True" data-remote=true  id="poll_action" class="btn">Close Poll</a>
@@ -182,9 +196,28 @@ click on question to edit
 <span id="state" >
 <a href="?reopen=True&poll=True" data-remote=true id="poll_action" class="btn">Reopen Poll</a>
 </span>
+        {%endif%}
     {%endif%}
 
-  {%endif%}
+{%endif%}
+
+
+
+{% if not poll.viewable %}
+    <span id="state_h" >
+<a href="javascript:void(0)" id="poll_v" class="btn" onclick="loadViewable('?viewable=True&poll=True')">Show On Home page</a>
+</span>
+ {% else %}
+    <span id="state_h" >
+<a href="javascript:void(0)" id="poll_v" class="btn" onclick="loadViewable('?unviewable=True&poll=True')">Don't Show on home page</a>
+</span>
+{% endif %}
+
+<h3>Groups</h3>
+{% for group in groups %}
+<span style="border:1px solid #ccc;padding:3px;">{{group.name}}</span>
+
+{%endfor%}
 
 <form action="">
 {% csrf_token %}
@@ -211,7 +244,9 @@ click on question to edit
 </form>
 <br/>
 
+<script type="text/javascript">
 
+</script>
 
 <div  class="modal hide" id="category">
     <form method="post" id="category_form" action="./?category=true" data-remote=true>

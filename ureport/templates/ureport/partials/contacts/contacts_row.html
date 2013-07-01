@@ -2,7 +2,8 @@
 {% block remaining_row_content %}
     <td>
         {% if object.mobile %}
-            <a href="{% url ureport.views.ureporter_profile object.connection_pk %}">
+            <!-- <a href="{% url ureport.views.ureporter_profile object.connection_pk %}"> -->
+            <a href="{% url "profile" object.connection_pk %}">
         {% endif %}
         {{ object.name }}
         {% if object.mobile %}
@@ -11,6 +12,7 @@
     </td>
     <td>
         {{ object.mobile}}
+       <!-- <a href="{% url "profile" object.connection_pk %}"> {{ object.connection_pk }}</a> -->
     </td>
     <td>
     {{  object.age.days }}

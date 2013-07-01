@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils import simplejson
 from django.utils.safestring import mark_safe
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from ureport.models import IgnoredTags
 from django.contrib.auth.decorators import login_required
 from ureport.utils import retrieve_poll
@@ -28,28 +28,34 @@ def best_visualization(request, poll_id=None):
     if 'module' in request.GET:
         module = True
     polls = retrieve_poll(request, poll_id)
-    poll = polls[0]
+    try:
+        poll = polls[0]
+    except IndexError:
+        raise Http404
 
     #    if poll_id:
     #        poll = Poll.objects.get(pk=poll_id)
     #    else:
     #        poll = Poll.objects.latest('start_date')
+    try:
+        rate = poll.responses.count() * 100 / poll.contacts.count()
+    except ZeroDivisionError:
+        rate = 0
 
-    rate = poll.responses.count() * 100 / poll.contacts.count()
-    dict = {
+    dict_to_render = {
         'poll': poll,
         'polls': [poll],
         'unlabeled': True,
         'module': module,
         'rate': int(rate),
         }
-    if poll.type == Poll.TYPE_TEXT and not  ResponseCategory.objects.filter(response__poll=poll):
-        dict.update({'tags': _get_tags(polls),
+    if poll.type == Poll.TYPE_TEXT and not  poll.categories.exists():
+        dict_to_render.update({'tags': _get_tags(polls),
                     'responses': _get_responses(poll),
                     'poll_id': poll.pk,
                     'map_bounds':settings.OPEN_LAYERS_MAP_BOUNDS})
     return render_to_response('ureport/partials/viz/best_visualization.html'
-                              , dict,
+                              , dict_to_render,
                               context_instance=RequestContext(request))
 
 

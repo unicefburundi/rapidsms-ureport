@@ -85,7 +85,8 @@ LEFT JOIN
    ON "rapidsms_contact"."reporting_location_id" = "locations_location"."id" ;
         """
         materialized_view_sql="""
-        create table ureport_contact as 
+        DROP TABLE ureport_contact;
+        CREATE TABLE ureport_contact AS 
         select id, 
         name,
         is_caregiver,
@@ -103,13 +104,12 @@ LEFT JOIN
         incoming,
         connection_pk,
         contacts_export.group,
-        false as dirty,
-        null::timestamp with time zone as expiry from contacts_export;
+        false AS dirty,
+        null::timestamp with time zone AS expiry FROM contacts_export;
         """
         
         trigger="""
-CREATE or REPLACE FUNCTION ureport_contact_refresh_row( rapidsms_contact_id integer
-) returns void
+CREATE or REPLACE FUNCTION ureport_contact_refresh_row( rapidsms_contact_id integer) RETURNS void
 security definer language 'plpgsql' as $$ begin
 DELETE
 FROM ureport_contact uc
@@ -134,7 +134,7 @@ SELECT id,
     ce.group FROM contacts_export ce WHERE ce.id = rapidsms_contact_id;
 end $$;
 
-CREATE OR REPLACE FUNCTION ureport_contact_refresh_row_connection( rapidsms_connection_id integer ) returns void
+CREATE OR REPLACE FUNCTION ureport_contact_refresh_row_connection( rapidsms_connection_id integer ) RETURNS void
 security definer language 'plpgsql' as $$ begin
 DELETE
 FROM ureport_contact uc
@@ -159,52 +159,59 @@ INSERT INTO ureport_contact  SELECT id,
     FROM contacts_export ce WHERE ce.connection_pk = rapidsms_connection_id;
 end $$;
 
-create or replace  function contact_update()  returns trigger
-security definer language 'plpgsql' as $$ begin
-perform ureport_contact_refresh_row(new.id);
-return null;
-end $$;
+CREATE OR REPLACE FUNCTION contact_update() RETURNS TRIGGER
+SECURITY DEFINER LANGUAGE 'plpgsql' AS $$ 
+BEGIN
+    PERFORM ureport_contact_refresh_row(new.id);
+    RETURN null;
+END $$;
 
-create  or replace function contact_update_message()  returns trigger
-security definer language 'plpgsql' as $$ begin
-perform ureport_contact_refresh_row_connection(new.connection_id);
-return null;
-end $$;
+CREATE OR REPLACE FUNCTION contact_update_message() RETURNS TRIGGER
+SECURITY DEFINER LANGUAGE 'plpgsql' AS $$ 
+BEGIN
+    PERFORM ureport_contact_refresh_row_connection(new.connection_id);
+    RETURN null;
+END $$;
 
+CREATE OR REPLACE FUNCTION contact_update_message() RETURNS TRIGGER
+SECURITY DEFINER LANGUAGE 'plpgsql' AS $$ 
+BEGIN
+    PERFORM ureport_contact_refresh_row_connection(new.connection_id);
+    RETURN null;
+END $$;
 
-create  or replace function contact_update_message()  returns trigger
-security definer language 'plpgsql' as $$ begin
-perform ureport_contact_refresh_row_connection(new.connection_id);
-return null;
-end $$;
+DROP TRIGGER IF EXISTS update_contact ON rapidsms_contact CASCADE;
+CREATE TRIGGER update_contact AFTER INSERT ON rapidsms_contact FOR EACH ROW EXECUTE contact_update();
 
+DROP TRIGGER IF EXISTS update_contact_update ON rapidsms_contact CASCADE;
+CREATE TRIGGER update_contact_update AFTER UPDATE ON rapidsms_contact FOR EACH ROW EXECUTE PROCEDURE contact_update();
 
-create trigger update_contact after insert on rapidsms_contact for each row execute procedure contact_update();
-create trigger update_contact_update after update on rapidsms_contact for each row execute procedure contact_update();
-create trigger update_contact_message after insert on rapidsms_httprouter_message for each row execute procedure contact_update_message();
+DROP TRIGGER IF EXISTS update_contact_message ON rapidsms_httprouter_message CASCADE;
+CREATE TRIGGER update_contact_message AFTER INSERT ON rapidsms_httprouter_message FOR EACH ROW EXECUTE PROCEDURE contact_update_message();
 
-UPDATE ureport_contact SET 
-    id=c.id,
-    name=c.name,
-    is_caregiver=c.is_caregiver,
-    reporting_location_id=c.reporting_location_id,
-    user_id=c.user_id,
-    mobile=c.mobile,
-    language=c.language,
-    province=c.province,
-    age=c.age,
-    gender=c.gender,
-    facility=c.facility,
-    colline=c.colline,
-    responses=c.responses,
-    questions=c.questions,
-    incoming=c.incoming,
-    connection_pk=c.connection_pk,
-    "group"=c.group 
-    FROM contacts_export AS c;
-
-
-           """
+"""
+#UPDATE ureport_contact SET 
+#    id=c.id,
+#    name=c.name,
+#    is_caregiver=c.is_caregiver,
+#    reporting_location_id=c.reporting_location_id,
+#    user_id=c.user_id,
+#    mobile=c.mobile,
+#    language=c.language,
+#    province=c.province,
+#    age=c.age,
+#    gender=c.gender,
+#    facility=c.facility,
+#    colline=c.colline,
+#    responses=c.responses,
+#    questions=c.questions,
+#    incoming=c.incoming,
+#    connection_pk=c.connection_pk,
+#    "group"=c.group 
+#    FROM contacts_export AS c;
+#
+#
+#           """
         db.execute(view_sql)
         db.execute(materialized_view_sql)
         db.execute(trigger)

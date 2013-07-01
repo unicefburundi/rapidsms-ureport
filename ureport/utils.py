@@ -60,7 +60,9 @@ def get_contacts(**kwargs):
 def get_contacts2(**kwargs):
     request = kwargs.pop('request')
     admin_grp = getattr(settings, 'ADMIN_GROUP_NAME', 'admins')
-    if request.user.is_authenticated() and hasattr(Contact, 'groups') and request.user.groups.filter(name=admin_grp).count() == 0:
+    if request.user.is_authenticated() and request.user.groups.filter(name=admin_grp).count() == 0 or request.user.is_superuser:
+        return UreportContact.objects.all()
+    elif request.user.is_authenticated() and hasattr(Contact, 'groups') and not request.user.groups.filter(name=admin_grp).count() == 0:
         q = None
         for f in request.user.groups.values_list('name',flat=True) :
             if not q:
@@ -75,7 +77,7 @@ def get_contacts2(**kwargs):
             to_ret=UreportContact.objects.none()
         return to_ret
     else:
-        return UreportContact.objects.all()
+        return UreportContact.objects.none()
 
 def get_polls(**kwargs):
     script_polls = ScriptStep.objects.exclude(poll=None).values_list('poll', flat=True)

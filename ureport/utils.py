@@ -11,7 +11,7 @@ from django.db.models import Count
 from ureport.models.database_views import UreportContact
 from unregister.models import Blacklist
 from django.conf import settings
-#from rapidsms_httprouter.models import Message
+from rapidsms_httprouter.models import Message
 from django.contrib.sites.models import Site
 from rapidsms.models import Connection
 from poll.models import gettext_db
@@ -137,9 +137,10 @@ def get_quit_messages(**kwargs):
 
 
 def get_unsolicitized_messages(**kwargs):
-    OPT_IN_WORDS_LUO = getattr(settings, 'OPT_IN_WORDS_LUO')
-    OPT_IN_WORDS_EN = getattr(settings, 'OPT_IN_WORDS')
-    opt_reg = "|".join(OPT_IN_WORDS_LUO + OPT_IN_WORDS_EN)
+#    OPT_IN_WORDS_LUO = getattr(settings, 'OPT_IN_WORDS_LUO')
+#    OPT_IN_WORDS_EN = getattr(settings, 'OPT_IN_WORDS')
+#    opt_reg = "|".join(OPT_IN_WORDS_LUO + OPT_IN_WORDS_EN)
+    opt_reg = "|".join(all_optin_words())
     return Message.objects.filter(application="ureport", direction="I").exclude(
         text__iregex=".*\m(%s)\y.*" % opt_reg).exclude(application="poll")
 

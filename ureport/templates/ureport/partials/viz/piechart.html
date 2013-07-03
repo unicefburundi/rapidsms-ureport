@@ -20,10 +20,8 @@
 </div>
 <div style="min-width: 200px; height: 400px; margin: 0 auto" id="agestats_{{ poll.pk }}">
 </div>
-
-
-<script src="{{MEDIA_URL}}ureport/javascripts/highcharts.js" type="text/javascript"></script>
-<script src="{{MEDIA_URL}}ureport/javascripts/jqBarGraph.1.1.min.js" type="text/javascript"></script>
+<script src="{{STATIC_URL}}ureport/javascripts/highcharts.js" type="text/javascript"></script>
+<script src="{{STATIC_URL}}ureport/javascripts/jqBarGraph.1.1.min.js" type="text/javascript"></script>
 
 <script language="javascript">
     $(document).ready(function () {
@@ -37,7 +35,7 @@
             $(gender_id).show();
 
             var gender = $('input[name=gender_button]:checked')[0].value;
-            var url = '{% url poll.views.gender_stats poll.pk %}' + '?gender=' + gender;
+            var url = '{% url "poll.views.gender_stats" poll.pk %}' + '?gender=' + gender;
             $.ajax({
                 type:"GET",
                 url:url,
@@ -56,7 +54,7 @@
             $(age_id).show();
             var lower = $('#lower').val();
             var upper = $('#upper').val();
-            var url = '{% url poll.views.age_stats poll.pk %}' + '?lower=' + lower + "&upper=" + upper;
+            var url = '{% url "poll.views.age_stats" poll.pk %}' + '?lower=' + lower + "&upper=" + upper;
             $.ajax({
                 type:"GET",
                 url:url,

@@ -221,15 +221,6 @@ class AutoregGroupRules(models.Model):
         app_label = 'ureport'
 
 
-from .litseners import autoreg, check_conn, update_latest_poll, ussd_poll, add_to_poll
-
-script_progress_was_completed.connect(autoreg, weak=False)
-post_save.connect(check_conn, sender=Connection, weak=False)
-post_save.connect(update_latest_poll, sender=Poll, weak=False)
-ussd_complete.connect(ussd_poll, weak=False)
-#post_save.connect(add_to_poll, sender=Blacklist, weak=False)
-
-
 class UPoll(Poll):
     def _get_set_attr(self):
         values = self.pollattributevalue_set.all()
@@ -269,6 +260,7 @@ class UPoll(Poll):
 
 
     class Meta:
+        app_label = 'ureport'
         proxy = True
 
 
@@ -340,3 +332,11 @@ class SentToMtrac(models.Model):
 
     class Meta:
         app_label = 'ureport'
+
+from .litseners import autoreg, check_conn, update_latest_poll, ussd_poll, add_to_poll
+
+script_progress_was_completed.connect(autoreg, weak=False)
+post_save.connect(check_conn, sender=Connection, weak=False)
+post_save.connect(update_latest_poll, sender=Poll, weak=False)
+ussd_complete.connect(ussd_poll, weak=False)
+#post_save.connect(add_to_poll, sender=Blacklist, weak=False)

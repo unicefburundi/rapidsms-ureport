@@ -39,6 +39,7 @@ def voices(request):
         'deployment_id': getattr(settings, 'DEPLOYMENT_ID', 1),
         'quote': quote,
         'geoserver_url': getattr(settings, 'GEOSERVER_URL', None),
+        'map_bounds': getattr(settings, 'OPEN_LAYERS_MAP_BOUNDS', '3226872.59281459, -496397.855648315, 3434638.20264732, -256041.778361828'),
         'show_contact_info': getattr(settings, 'SHOW_CONTACT_INFO', True)
     }
 

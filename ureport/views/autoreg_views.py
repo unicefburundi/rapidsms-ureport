@@ -6,8 +6,8 @@ from django.shortcuts import render_to_response, HttpResponse
 from django.template import RequestContext
 from django.views.decorators.cache import never_cache
 from rapidsms.models import Connection
-from rapidsms_httprouter_src.rapidsms_httprouter.models import Message
-from rapidsms_httprouter_src.rapidsms_httprouter.views import MessageTable
+from rapidsms_httprouter.models import Message
+from rapidsms_httprouter.views import MessageTable
 from ureport.models import AutoregGroupRules
 from ureport.forms import GroupRules
 from django.contrib.auth.models import Group

@@ -23,7 +23,7 @@ from ureport.utils import get_polls, get_script_polls, get_access
 from generic.sorters import SimpleSorter
 from ureport.views.utils.paginator import ureport_paginate
 from django.db import transaction
-from django.contrib.auth.models import Group, User, Message
+from django.contrib.auth.models import Group, User #, Message
 from ureport.models import UPoll
 import logging, datetime
 

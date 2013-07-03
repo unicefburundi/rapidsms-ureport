@@ -3,10 +3,12 @@ from logging import getLogger
 from contact.models import MessageFlag
 from rapidsms.models import Contact
 from poll.models import ResponseCategory
-from ureport.models.models import UPoll as Poll, PollAttribute
+from ureport.models.models import UPoll as Poll, PollAttribute, Ureporter 
+#from ureport.models import UPoll as Poll, PollAttribute
+#from .models import UPoll as Poll, PollAttribute
 from script.models import ScriptStep, Script
 from django.db.models import Count
-from .models import Ureporter, UreportContact
+from ureport.models.database_views import UreportContact
 from unregister.models import Blacklist
 from django.conf import settings
 #from rapidsms_httprouter.models import Message

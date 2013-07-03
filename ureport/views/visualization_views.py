@@ -32,11 +32,6 @@ def best_visualization(request, poll_id=None):
         poll = polls[0]
     except IndexError:
         raise Http404
-
-    #    if poll_id:
-    #        poll = Poll.objects.get(pk=poll_id)
-    #    else:
-    #        poll = Poll.objects.latest('start_date')
     try:
         rate = poll.responses.count() * 100 / poll.contacts.count()
     except ZeroDivisionError:
@@ -53,7 +48,7 @@ def best_visualization(request, poll_id=None):
         dict_to_render.update({'tags': _get_tags(polls),
                     'responses': _get_responses(poll),
                     'poll_id': poll.pk,
-                    'map_bounds':settings.OPEN_LAYERS_MAP_BOUNDS})
+                    })
     return render_to_response('ureport/partials/viz/best_visualization.html'
                               , dict_to_render,
                               context_instance=RequestContext(request))

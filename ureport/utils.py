@@ -51,6 +51,18 @@ def all_optin_words():
             words = joins[lang]
             _jlist += words
     return _jlist
+
+def all_optout_words():
+    joins = settings.OPT_OUT_WORDS
+    _jlist = []
+    for lang in joins:
+        if isinstance(joins[lang], basestring):
+            words = [joins[lang]]
+            _jlist += words
+        else:
+            words = joins[lang]
+            _jlist += words
+    return _jlist
         
 module_name = __name__
 logger = getLogger(module_name)
@@ -130,8 +142,9 @@ def get_flagged_messages(**kwargs):
 
 
 def get_quit_messages(**kwargs):
-    OPT_OUT_WORDS = getattr(settings, 'OPT_OUT_WORDS')
-    opt_words = "|".join(OPT_OUT_WORDS)
+#    OPT_OUT_WORDS = getattr(settings, 'OPT_OUT_WORDS')
+#    opt_words = "|".join(OPT_OUT_WORDS)
+    opt_words = "|".join(all_optout_words())
     return Message.objects.filter(text__iregex=".*\m(%s)\y.*" % opt_words).exclude(
         text__iregex=".*\m(%s)\y.*" % "what|uganda|sex|Because|why|which|how|\?|community|Children|where|yes|no")
 

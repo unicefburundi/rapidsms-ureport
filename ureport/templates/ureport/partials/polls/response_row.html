@@ -13,10 +13,10 @@
     <td class="response_options_col" >
     {% block actions_content %}
       <div class="buttons">
-           <a class="no-dec" onclick="deleteResponse(this, '{% url poll.views.delete_response response.pk %}');" href="javascript:void(0)" class="negative">
+           <a class="no-dec" onclick="deleteResponse(this, '{% url "poll.views.delete_response" response.pk %}');" href="javascript:void(0)" class="negative">
               <img style="vertical-alignment:bottom;padding-top:7px" src="{{ STATIC_URL }}rapidsms/icons/silk/delete.png" alt=""/>
           </a>
-          <a  onclick="editResponse(this, '{% url poll.views.edit_response response.pk %}');" href="javascript:void(0);">
+          <a  onclick="editResponse(this, '{% url "poll.views.edit_response" response.pk %}');" href="javascript:void(0);">
               <img src="{{ STATIC_URL }}poll/icons/silk/pencil.png" alt=""/> 
               Edit
           </a>

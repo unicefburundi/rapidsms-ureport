@@ -139,14 +139,14 @@ def view_poll(request, pk):
             if request.POST.get('poll[question]'):
                 poll.question = request.POST['poll[question]']
                 poll.save()
-
-        if request.GET.get("ussd", None):
-            question = request.POST.get("question")
-            response = request.POST.get("response")
-            xf.question = question
-            xf.save()
-            response.text = response
-            response.save()
+        if settings.USSD_ENABLED:
+            if request.GET.get("ussd", None):
+                question = request.POST.get("question")
+                response = request.POST.get("response")
+                xf.question = question
+                xf.save()
+                response.text = response
+                response.save()
         if request.GET.get("category", None):
             if request.GET.get('cat_pk'):
                 category = Category.objects.get(pk=int(request.GET.get('cat_pk')))
@@ -169,7 +169,11 @@ def view_poll(request, pk):
                 rule_form.save()
             else:
                 template = "ureport/polls/rules.html"
-
+    
+    if not settings.USSD_ENABLED:
+        xf = None
+        response = None
+        
     return render_to_response(template, {
         'poll': poll,
         'xf': xf,

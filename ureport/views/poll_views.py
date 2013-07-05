@@ -122,7 +122,7 @@ def view_poll(request, pk):
                 '(\'?viewable=True&poll=True\')">Show On Home page</a>')
             res['Cache-Control'] = 'no-store'
             return res
-    if settings.USSED_ENABLED:
+    if settings.USSD_ENABLED:
         x = XForm.objects.get(name='poll')
         xf, _ = XFormField.objects.get_or_create(name='latest_poll', xform=x, field_type=XFormField.TYPE_TEXT,
                                                  command="poll_%d" % poll.pk)

@@ -4,6 +4,7 @@
     Messages - {{ block.super }}
 {% endblock %}
 {% block stylesheets %}
+	{{ block.super }}
 	<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/splits.css" />
     <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/modules.css" />
     <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/tables.css" />
@@ -130,7 +131,7 @@
                 <td><a href="javascript:void(0);" onclick="$('#edit_reporter').show();" class="btn">Edit Reporter</a></td>
                 <td><a href="?download=True" class="btn">Download History</a></td>
                 <td><a class="btn" href="/contact/{{ contact.pk }}/blacklist/" data-remote=true data-disable-with="blacklisting...">Blacklist</a></td>
-                <td><a class="btn" href="{% url delete_contact contact.pk %}" id="delete_ureporter">Delete</a></td>
+                <td><a class="btn" href="{% url "delete_contact" contact.pk %}" id="delete_ureporter">Delete</a></td>
             </tr>
         </table>
         <div class="modal hide" id="edit_reporter">

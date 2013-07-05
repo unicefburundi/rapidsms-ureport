@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from rapidsms_httprouter.models import Message, STATUS_CHOICES
+from django.core.exceptions import ObjectDoesNotExist
 from ussd.models import Menu
 from poll.models import Poll
 import datetime
@@ -22,13 +23,16 @@ def get_results(poll):
 
 def update_poll_results():
     latest_polls=Poll.objects.filter(categories__name__in=['yes','no']).distinct().order_by('-pk')
-    res1=Menu.objects.get(slug="res1")
-
-    res1.label=latest_polls[0].name
-    res1.save()
-    res11=Menu.objects.get(slug="res11")
-    res11.label=get_results(latest_polls[0])
-    res11.save()
+    try:
+        res1=Menu.objects.get(slug="res1")
+    
+        res1.label=latest_polls[0].name
+        res1.save()
+        res11=Menu.objects.get(slug="res11")
+        res11.label=get_results(latest_polls[0])
+        res11.save()
+    except ObjectDoesNotExist:
+        pass
     try:
         #We don't know that there is going to be more than one poll in ureport
         #Todo Get a better way to do all this

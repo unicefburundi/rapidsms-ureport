@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from django.conf import settings
 from django.db import models
 from poll.models import Poll
 from rapidsms.models import Contact, Connection
@@ -337,6 +338,9 @@ from .litseners import autoreg, check_conn, update_latest_poll, ussd_poll, add_t
 
 script_progress_was_completed.connect(autoreg, weak=False)
 post_save.connect(check_conn, sender=Connection, weak=False)
-post_save.connect(update_latest_poll, sender=Poll, weak=False)
 ussd_complete.connect(ussd_poll, weak=False)
+
+if settings.USSD_ENABLED:
+    post_save.connect(update_latest_poll, sender=Poll, weak=False)
+    
 #post_save.connect(add_to_poll, sender=Blacklist, weak=False)

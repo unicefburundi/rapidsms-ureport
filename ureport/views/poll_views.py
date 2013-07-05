@@ -122,10 +122,11 @@ def view_poll(request, pk):
                 '(\'?viewable=True&poll=True\')">Show On Home page</a>')
             res['Cache-Control'] = 'no-store'
             return res
-    x = XForm.objects.get(name='poll')
-    xf, _ = XFormField.objects.get_or_create(name='latest_poll', xform=x, field_type=XFormField.TYPE_TEXT,
-                                             command="poll_%d" % poll.pk)
-    response = StubScreen.objects.get_or_create(slug='question_response')
+    if settings.USSED_ENABLED:
+        x = XForm.objects.get(name='poll')
+        xf, _ = XFormField.objects.get_or_create(name='latest_poll', xform=x, field_type=XFormField.TYPE_TEXT,
+                                                 command="poll_%d" % poll.pk)
+        response = StubScreen.objects.get_or_create(slug='question_response')
     template = 'ureport/polls/view_poll.html'
     categories = poll.categories.all()
     category_form = CategoryForm()

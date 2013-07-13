@@ -43,6 +43,9 @@ class AutoRegTest(TestCase): #pragma: no cover
         self.bujumbura_province = Location.objects.create(type=province, name='Bujumbura Marie')
         self.kibenga_colline = Location.objects.create(type=colline, name='kibenga')
         
+        settings.ROUTER_PASSWORD = None
+        settings.ROUTER_URL = None
+
         # make celery tasks execute immediately (no redis)
         settings.CELERY_ALWAYS_EAGER = True
         settings.BROKER_BACKEND = 'memory'

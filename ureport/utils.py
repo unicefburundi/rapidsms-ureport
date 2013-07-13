@@ -21,6 +21,13 @@ from django.conf import settings
 import re
 from uganda_common.models import Access
 
+#from rapidsms.router.db.models import * #Switching to db router, this time for good
+
+#router_setting = getattr(settings, 'RAPIDSMS_ROUTER', None)
+#
+#if(router_setting == "rapidsms.router.db.DatabaseRouter"):
+#    from rapidsms.router.db.models import *
+
 def get_language(message):
     joins = settings.JOIN_WORDS
     for lang in joins:

@@ -251,3 +251,15 @@ class AutoRegTest(TestCase): #pragma: no cover
         ScriptProgress.objects.all().delete()
         self.fake_incoming('join')
         self.assertEquals(Message.objects.filter(direction='O').order_by('-pk')[0].text, getattr(settings,'OPTED_IN_CONFIRMATION','')['en'])
+        
+    def testSendUrl(self):
+        Script.objects.all().update(enabled=True)
+        self.register_reporter('join', 'Red Cross')
+        call_command('check_script_progress', e=8, l=24)
+        from rapidsms_httprouter.tasks import queue_messages_task, send_kannel_messages_task
+        queue_messages_task()
+        url = send_kannel_messages_task()
+        self.assertEquals(url, settings.ROUTER_URL);
+#        ScriptProgress.objects.all().delete()
+#        self.fake_incoming('join')
+#        self.assertEquals(Message.objects.filter(direction='O').order_by('-pk')[0].text, getattr(settings,'OPTED_IN_CONFIRMATION','')['en'])

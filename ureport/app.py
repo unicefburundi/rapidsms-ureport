@@ -81,5 +81,6 @@ class App(AppBase):
                     flag = Flag.objects.get(name=[d for d in list(match.groups()) if d][1])
                 except (Flag.DoesNotExist, IndexError):
                     flag = None
-                MessageFlag.objects.create(message = db_message, flag=flag)
+                MessageFlag.objects.create(message = db_message, flag=flag) 
+             
         return False

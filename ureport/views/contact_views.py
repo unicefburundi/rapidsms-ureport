@@ -348,6 +348,7 @@ def ureporters(request):
 
     columns = [
         ('Identifier', True, 'connection_pk', SimpleSorter()),
+        ('Modile', True, 'mobile', SimpleSorter()),
         ('Age', True, 'age', SimpleSorter(),),
         ('Gender', True, 'gender', SimpleSorter(),),
         ('Language', True, 'language',SimpleSorter(),),

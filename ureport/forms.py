@@ -28,6 +28,8 @@ from ureport.models import MessageAttribute, MessageDetail
 from django.utils.safestring import mark_safe
 from uganda_common.models import Access
 import tasks
+from django.conf import settings
+languages = getattr(settings, 'LANGUAGES', (('fr', 'French')))
 
 
 class EditReporterForm(forms.ModelForm):
@@ -241,9 +243,6 @@ class AssignToNewPollForm(ActionForm):
             forms.Form.__init__(self, data, **kwargs)
         else:
             forms.Form.__init__(self, **kwargs)
-        
-        from django.conf import settings
-        languages = getattr(settings, 'LANGUAGES', (('en', 'English')))
         i = 0
         for lang, lang_verbose in languages:
             form_name = 'question_%s' % lang
@@ -377,9 +376,7 @@ class MassTextForm(ActionForm):
             forms.Form.__init__(self, data, **kwargs)
         else:
             forms.Form.__init__(self, **kwargs)
-        
-        from django.conf import settings
-        languages = getattr(settings, 'LANGUAGES', (('en', 'English')))
+            
         i = 0
         for lang, lang_verbose in languages:
             form_name = 'text_%s' % lang
@@ -469,27 +466,36 @@ class NewPollForm(forms.Form): # pragma: no cover
                                                Poll.TYPE_CHOICES.values()]
 
     name = forms.CharField(max_length=32, required=True)
-    question_en = forms.CharField(max_length=160, required=True, widget=SMSInput())
-    question_luo = forms.CharField(max_length=160, required=False, widget=SMSInput())
-    question_kdj = forms.CharField(max_length=160, required=False, widget=SMSInput())
-    default_response_en = forms.CharField(max_length=160, required=False, widget=SMSInput())
-    default_response_kdj = forms.CharField(max_length=160, required=False, widget=SMSInput())
-    default_response_luo = forms.CharField(max_length=160, required=False, widget=SMSInput())
-    districts = forms.ModelMultipleChoiceField(queryset=
-                                               Location.objects.filter(type__slug='district'
-                                               ).order_by('name'), required=False)
-
-    # This may seem like a hack, but this allows time for the Contact model
-    # to optionally have groups (i.e., poll doesn't explicitly depend on the rapidsms-auth
-    # app.
+    
     def __init__(self, data=None, **kwargs):
-        queryset = Group.objects.order_by('name')
-        if 'request' in kwargs:
-            request = kwargs.pop('request')
+        self.request = kwargs.pop('request')
         if data:
             forms.Form.__init__(self, data, **kwargs)
         else:
             forms.Form.__init__(self, **kwargs)
+        
+        #Question forms
+        i = 0
+        for lang, lang_verbose in languages:
+            form_name = 'question_%s' % lang
+            form_label = 'Question:%s' % lang_verbose
+            if i == 0:
+                self.fields[form_name] = forms.CharField(label=form_label, max_length=160, required=True, widget=SMSInput())
+            else:
+                self.fields[form_name]  = forms.CharField(label=form_label, max_length=160, required=False, widget=SMSInput())
+            i +=1
+        #Response forms
+        for lang, lang_verbose in languages:
+            form_name = 'default_response_%s' % lang
+            form_label = 'Default Response:%s' % lang_verbose
+            self.fields[form_name]  = forms.CharField(label=form_label, max_length=160, required=False, widget=SMSInput())
+        
+        # This may seem like a hack, but this allows time for the Contact model
+        # to optionally have groups (i.e., poll doesn't explicitly depend on the rapidsms-auth
+        # app.    
+        queryset = Group.objects.order_by('name')
+        if 'request' in kwargs:
+            request = kwargs.pop('request')
         try:
             access = Access.objects.get(user=request.user)
             queryset = access.groups.order_by('name')
@@ -499,28 +505,32 @@ class NewPollForm(forms.Form): # pragma: no cover
             pass
         if hasattr(Contact, 'groups'):
             self.fields['groups'] = forms.ModelMultipleChoiceField(queryset=queryset, required=False)
+    
+    provinces = forms.ModelMultipleChoiceField(queryset=
+                                               Location.objects.filter(type__slug='province'
+                                               ).order_by('name'), required=False)        
 
     def clean(self):
         cleaned_data = self.cleaned_data
         groups = cleaned_data.get('groups')
-        if cleaned_data.get('question_en', None):
-            cleaned_data['question_en'] = cleaned_data.get('question_en').replace('%', u'\u0025')
-        if cleaned_data.get('default_response_en', None):
-            cleaned_data['default_response_en'] = cleaned_data['default_response_en'].replace('%', u'\u0025')
+        if cleaned_data.get('question_fr', None):
+            cleaned_data['question_fr'] = cleaned_data.get('question_fr').replace('%', u'\u0025')
+        if cleaned_data.get('default_response_fr', None):
+            cleaned_data['default_response_fr'] = cleaned_data['default_response_fr'].replace('%', u'\u0025')
 
         if not groups:
             raise forms.ValidationError("You must provide a set of recipients (a group or groups)")
 
         return cleaned_data
 
+    def clean_default_response_fr(self):
+        return self._cleaned_default_response(self.data['default_response_fr'])
+
     def clean_default_response_en(self):
         return self._cleaned_default_response(self.data['default_response_en'])
 
-    def clean_default_response_luo(self):
-        return self._cleaned_default_response(self.data['default_response_luo'])
-
-    def clean_default_response_kdj(self):
-        return self._cleaned_default_response(self.cleaned_data['default_response_kdj'])
+    def clean_default_response_ki(self):
+        return self._cleaned_default_response(self.cleaned_data['default_response_ki'])
 
     def _cleaned_default_response(self, default_response):
         return default_response.replace('%', '%%')

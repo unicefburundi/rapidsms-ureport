@@ -198,16 +198,16 @@ def new_poll(req):
         form.updateTypes()
         if form.is_valid() and groups_form.is_valid():
             # create our XForm
-            question = form.cleaned_data['question_en']
-            default_response = form.cleaned_data['default_response_en']
-            districts = form.cleaned_data['districts']
+            question = form.cleaned_data['question_fr']
+            default_response = form.cleaned_data['default_response_fr']
+            provinces = form.cleaned_data['provinces']
             excluded_groups = groups_form.cleaned_data['group_list']
             if hasattr(Contact, 'groups'):
                 groups = form.cleaned_data['groups']
 
             log.info("[new-poll] - finding all contacts for this poll...")
-            if len(districts):
-                contacts = Contact.objects.filter(reporting_location__in=districts).filter(groups__in=groups).exclude(
+            if len(provinces):
+                contacts = Contact.objects.filter(reporting_location__in=provinces).filter(groups__in=groups).exclude(
                     groups__in=excluded_groups)
             else:
                 contacts = Contact.objects.filter(groups__in=groups).exclude(groups__in=excluded_groups)
@@ -218,35 +218,34 @@ def new_poll(req):
             name = form.cleaned_data['name']
             p_type = form.cleaned_data['type']
             response_type = form.cleaned_data['response_type']
-            if not form.cleaned_data['default_response_luo'] == '' \
-                and not form.cleaned_data['default_response_en'] == '':
+            if not form.cleaned_data['default_response_en'] == '' \
+                and not form.cleaned_data['default_response_fr'] == '':
                 (translation, created) = \
-                    Translation.objects.get_or_create(language='ach',
-                                                      field=form.cleaned_data['default_response_en'],
-                                                      value=form.cleaned_data['default_response_luo'])
-            if not form.cleaned_data['default_response_kdj'] == '' \
-                and not form.cleaned_data['default_response_en'] == '':
+                    Translation.objects.get_or_create(language='en',
+                                                      field=form.cleaned_data['default_response_fr'],
+                                                      value=form.cleaned_data['default_response_en'])
+            if not form.cleaned_data['default_response_ki'] == '' \
+                and not form.cleaned_data['default_response_fr'] == '':
                 (translation, created) = \
-                    Translation.objects.get_or_create(language='kdj',
-                                                      field=form.cleaned_data['default_response_en'],
-                                                      value=form.cleaned_data['default_response_kdj'])
+                    Translation.objects.get_or_create(language='ki',
+                                                      field=form.cleaned_data['default_response_fr'],
+                                                      value=form.cleaned_data['default_response_ki'])
 
-            if not form.cleaned_data['question_luo'] == '':
+            if not form.cleaned_data['question_en'] == '':
                 (translation, created) = \
-                    Translation.objects.get_or_create(language='ach',
-                                                      field=form.cleaned_data['question_en'],
-                                                      value=form.cleaned_data['question_luo'])
+                    Translation.objects.get_or_create(language='en',
+                                                      field=form.cleaned_data['question_fr'],
+                                                      value=form.cleaned_data['question_en'])
 
-            if not form.cleaned_data['question_kdj'] == '':
+            if not form.cleaned_data['question_ki'] == '':
                 (translation, created) = \
-                    Translation.objects.get_or_create(language='kdj',
-                                                      field=form.cleaned_data['question_en'],
-                                                      value=form.cleaned_data['question_kdj'])
+                    Translation.objects.get_or_create(language='ki',
+                                                      field=form.cleaned_data['question_fr'],
+                                                      value=form.cleaned_data['question_ki'])
 
             log.info("[new-poll] - translations ok.")
 
-            poll_type = (Poll.TYPE_TEXT if p_type
-                                           == NewPollForm.TYPE_YES_NO else p_type)
+            poll_type = (Poll.TYPE_TEXT if p_type == NewPollForm.TYPE_YES_NO else p_type)
 
             poll = Poll.create_with_bulk(
                 name,

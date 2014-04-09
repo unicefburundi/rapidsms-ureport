@@ -452,12 +452,15 @@ class MassTextForm(ActionForm):
 class NewPollForm(forms.Form): # pragma: no cover
 
     TYPE_YES_NO = 'yn'
-
+    TYPE_CHOICES = [(TYPE_YES_NO, 'Yes/No Question')]   
+    TYPE_CHOICES += [(choice['type'], choice['label']) for choice in Poll.TYPE_CHOICES.values()]
+    
+    print tuple(TYPE_CHOICES)    
+    
     type = forms.ChoiceField(
         required=True,
-        choices=(
-            (TYPE_YES_NO, 'Yes/No Question'),
-        ))
+        choices=tuple(TYPE_CHOICES)
+        )
     response_type = forms.ChoiceField(choices=Poll.RESPONSE_TYPE_CHOICES, widget=RadioSelect,
                                       initial=Poll.RESPONSE_TYPE_ALL)
 
@@ -507,7 +510,7 @@ class NewPollForm(forms.Form): # pragma: no cover
             self.fields['groups'] = forms.ModelMultipleChoiceField(queryset=queryset, required=False)
     
     provinces = forms.ModelMultipleChoiceField(queryset=
-                                               Location.objects.filter(type__slug='province'
+                                               Location.objects.filter(type__slug='district'
                                                ).order_by('name'), required=False)        
 
     def clean(self):
@@ -696,6 +699,7 @@ class AgeFilterForm(FilterForm):
     age = forms.CharField(max_length=20, label="Age", widget=forms.TextInput(attrs={'size': '20'}), required=False)
 
     def filter(self, request, queryset):
+        import ipdb;ipdb.set_trace()
 
         flag = self.cleaned_data['flag']
 

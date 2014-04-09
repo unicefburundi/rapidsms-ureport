@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 
 {% block stylesheets %}
 	{{ block.super }}
@@ -70,14 +70,11 @@
             }
         </style>
 {% endblock %}
- {% block extra_js %}
+ {% block extra_javascript %}
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}ureport/stylesheets/jquery-ui.css"/>
     <script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/jquery-ui.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/dropdown.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/tabs.js"></script>
-
-{% endblock %}
-        {%block top_js %}
 
         <script type="text/javascript">
             function loadViewable(href){
@@ -150,16 +147,14 @@
         </script>
 
 
-        {%endblock %}
+ {%endblock %}
 
 {% block content %}
 
   <div ><h3 style="font-weight: 300;font-size:22px;">{{ poll.name }}({{ poll.contacts.count }} participant{{ poll.contacts.count|pluralize }})</h3>
 </div>
-<div style="color:#666;font-size:16px;"">
-<span class='best_in_place' id='best_in_place_poll_question' data-url='/view_poll/{{poll.pk}}/?edit=true' data-object='poll'
-      data-attribute='question' data-type='input' >{{ poll.question }}</span>
-
+<div style="color:#666;font-size:16px;">
+<span class='best_in_place' id='best_in_place_poll_question' data-url='/view_poll/{{poll.pk}}/?edit=true' data-object='poll' data-attribute='question' data-type='input' >{{ poll.question }}</span>
 </div>
 <div style="border: 1px solid #DDD;
 font-size: 12px;
@@ -168,9 +163,6 @@ margin-right: 10px;
 margin-top: 10px;
 padding: 10px;
 color:#666;">Response:
-
-
-
 
 <span class='best_in_place' id='best_in_place_poll_default_response' data-url='/view_poll/{{poll.pk}}/?edit=true' data-object='poll'
       data-attribute='default_response' data-type='input' >{{ poll.default_response }}</span>

@@ -77,6 +77,11 @@ def view_poll(request, pk):
             poll = Poll.objects.get(pk=pk)
             if getattr(settings, 'START_POLL_MULTI_TX', False):
                 start_poll_multi_tx(poll)
+            elif getattr(settings, 'START_POLLS_IN_WEB_THREAD', False): #Starting poll in the web thread might still be good especially when testing (in development)
+                log.info("[start-poll-in-web-thread] Starting poll [%s] in web thread..." % str(poll.pk))
+                if not poll.start_date:
+                    poll.start()
+                log.info("[poll-in-web-thread-started] Start Ok.")
             else:
                 start_poll_single_tx(poll)
 
@@ -108,8 +113,7 @@ def view_poll(request, pk):
             res['Cache-Control'] = 'no-store'
             return res
         if request.GET.get('viewable'):
-            poll.viewable = True
-            poll.save()
+            poll.set_attr('viewable', True)
             res = HttpResponse(
                 '<a href="javascript:void(0)" id="poll_v" class="btn" onclick="loadViewable'
                 '(\'?unviewable=True&poll=True\')">Don\'t Show On Home page</a>')
@@ -195,7 +199,7 @@ def new_poll(req):
         log.info("[new-poll] - request recieved to create a poll")
         form = NewPollForm(req.POST, request=req)
         groups_form = GroupsFilter(req.POST, request=req)
-        form.updateTypes()
+#         form.updateTypes() #Added to form directly already no need to add them again
         if form.is_valid() and groups_form.is_valid():
             # create our XForm
             question = form.cleaned_data['question_fr']
@@ -272,7 +276,7 @@ def new_poll(req):
     else:
         form = NewPollForm(request=req)
         groups_form = GroupsFilter(request=req)
-        form.updateTypes()
+#         form.updateTypes() #Added to form directly already no need to add them again
 
     log.info("[new_poll] TRANSACTION COMMIT")
     return render_to_response('ureport/new_poll.html', {'form': form, 'groups_form': groups_form},
@@ -487,3 +491,9 @@ def script_polls(request):
                    auto_reg=True,
                    sort_ascending=False,
                    columns=columns)
+    
+def response_views(request, group):
+    #polls to be added
+    return render_to_response("ureport/polls/poll_group_results.html",
+                              {'some_variable': 'some_value', 'group':group},
+                              context_instance=RequestContext(request))

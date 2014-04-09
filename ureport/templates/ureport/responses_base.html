@@ -1,18 +1,15 @@
-{% extends "generic/base.html" %}
+{% extends "generic/generic_base.html" %}
 {% block title %}
     Poll Responses - {{ block.super }}
 {% endblock %}
-{% block stylesheets %}
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}ureport/stylesheets/ureport.css" />
-     <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}ureport/stylesheets/ureporters.css" />
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}rapidsms/stylesheets/splits.css" />
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}rapidsms/stylesheets/modules.css" />
-    <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}rapidsms/stylesheets/icons.css" />
-     <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}ureport/stylesheets/style.css" />
-<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}ureport/stylesheets/modal.css"/>
+{% block extra_stylesheets %}
+    {{ block.super }}
+     <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}ureport/stylesheets/style.css" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ureport/stylesheets/modal.css"/>
 {% endblock %}
-{% block extra_js %}
-    <script src="{{MEDIA_URL}}ureport/javascripts/jquery-ui.js" type="text/javascript"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}ureport/javascripts/tabs.js"></script>
+{% block extra_javascript %}
+	{{ block.super }}
+    <script src="{{ STATIC_URL }}ureport/javascripts/jquery-ui.js" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}ureport/javascripts/tabs.js"></script>
 {% endblock %}
 

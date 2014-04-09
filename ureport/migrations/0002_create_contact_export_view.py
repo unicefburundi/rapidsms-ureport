@@ -9,7 +9,7 @@ class Migration(DataMigration):
     def forwards(self, orm):
         year_now = datetime.datetime.now().year
         view_sql = """  
-DROP VIEW contacts_export; 
+DROP VIEW IF EXISTS contacts_export; 
 CREATE OR REPLACE VIEW contacts_export as SELECT
 "rapidsms_contact"."id" as id,
 "rapidsms_contact"."name" as name,
@@ -181,7 +181,7 @@ BEGIN
 END $$;
 
 DROP TRIGGER IF EXISTS update_contact ON rapidsms_contact CASCADE;
-CREATE TRIGGER update_contact AFTER INSERT ON rapidsms_contact FOR EACH ROW EXECUTE contact_update();
+CREATE TRIGGER update_contact AFTER INSERT ON rapidsms_contact FOR EACH ROW EXECUTE PROCEDURE contact_update();
 
 DROP TRIGGER IF EXISTS update_contact_update ON rapidsms_contact CASCADE;
 CREATE TRIGGER update_contact_update AFTER UPDATE ON rapidsms_contact FOR EACH ROW EXECUTE PROCEDURE contact_update();
